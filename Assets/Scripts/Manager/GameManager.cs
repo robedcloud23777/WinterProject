@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 {
     public static GameManager Instance { get; private set; }
 
+    public Vector3 spawnPoint = Vector3.zero;
+
     private void Awake()
     {
         if (Instance == null)
@@ -22,8 +24,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    void Start()
+    public void SpawnPlayer()
     {
-        PhotonNetwork.AutomaticallySyncScene = true; // 씬 자동 동기화 활성화
+        PhotonNetwork.Instantiate("Player", spawnPoint, Quaternion.identity);
     }
 }

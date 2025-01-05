@@ -1,9 +1,11 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+public class CameraController : MonoBehaviourPun
 {
+    [SerializeField] private GameObject cameraObject;
     [SerializeField] private Transform playerBody;
     [SerializeField] private Transform playerHead;
     [SerializeField] private Transform cam;
@@ -17,10 +19,17 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+
+        if (!photonView.IsMine)
+        {
+            // 다른 플레이어의 카메라 비활성화
+            cameraObject.SetActive(false);
+        }
     }
 
     private void LateUpdate()
     {
+        if (!photonView.IsMine) return;
         _mouseInput.x = Input.GetAxis("Mouse X") * mouseSensitivity;
         _mouseInput.y = Input.GetAxis("Mouse Y") * mouseSensitivity;
         playerBody.Rotate(Vector3.up, _mouseInput.x);

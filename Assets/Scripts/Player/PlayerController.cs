@@ -1,15 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPun
 {
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private PlayerMovement playerMoveMent;
     [SerializeField] private WeaponHeld weaponHeld;
 
+
     private void Update()
     {
+        if (!photonView.IsMine) return;
         playerMoveMent.MoveByInput(playerInput.GetMoveInput());
 
         if (playerInput.GetJumpInput())
