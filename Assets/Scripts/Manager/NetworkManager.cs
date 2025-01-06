@@ -20,6 +20,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public Button PreviousBtn;
     public Button NextBtn;
 
+    [Header("UsersPanel")]
+    public GameObject UsersPanel;
+    public TMP_Text[] PlayerName;
+    public Image[] UserSpace;
+    public Image[] ReadyState;
+    public Button ReadyBtn;
+    public bool[] IsReady;
+
     [Header("ETC")]
     public TMP_Text StatusText;
     public PhotonView PV;
@@ -93,6 +101,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         DisconnectPanel.SetActive(true);
         LobbyPanel.SetActive(false);
+        UsersPanel.SetActive(false);
     }
     #endregion
 
@@ -105,7 +114,40 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        PhotonNetwork.LoadLevel("Main"); // 방에 들어가면 GameScene으로 이동
+        int index = PhotonNetwork.LocalPlayer.ActorNumber;
+        LobbyPanel.SetActive(false);
+        UsersPanel.SetActive(true);
+        if(index == 1)
+        {
+            PlayerName[index - 1].text = NickNameInput.text;
+            Color color = UserSpace[index - 1].color;
+            color.a = Mathf.Clamp01(1);
+            UserSpace[index - 1].color = color;
+        }else if(index == 2)
+        {
+            PlayerName[index - 1].text = NickNameInput.text;
+            Color color = UserSpace[index - 1].color;
+            color.a = Mathf.Clamp01(1);
+            UserSpace[index - 1].color = color;
+        }
+    }
+
+    public void Ready()
+    {
+        int index = PhotonNetwork.LocalPlayer.ActorNumber;
+        IsReady[index - 1] = true;
+        if (index == 1)
+        {
+            Color color = ReadyState[index - 1].color;
+            color.a = Mathf.Clamp01(1);
+            ReadyState[index - 1].color = color;
+        }
+        else if (index == 2)
+        {
+            Color color = ReadyState[index - 1].color;
+            color.a = Mathf.Clamp01(1);
+            ReadyState[index - 1].color = color;
+        }
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message) { RoomInput.text = ""; CreateRoom(); }
