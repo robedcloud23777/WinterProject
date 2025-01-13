@@ -12,13 +12,14 @@ public class CameraController : MonoBehaviour
     private float _currentRotationY = 0f;
     [SerializeField] private float minVerticalAngle = -45f;
     [SerializeField] private float maxVerticalAngle = 45f;
+    [SerializeField] private Shooting shooting;
     private bool isDistanceZero = false;
+
 
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.F))
         {
-
             if (isDistanceZero)
             {
                 cameraDistance = 5f;
@@ -31,6 +32,7 @@ public class CameraController : MonoBehaviour
             }
         }
 
+   
     }
 
     public void LateUpdate()
@@ -57,7 +59,5 @@ public class CameraController : MonoBehaviour
             return hit.point + cam.forward * 0.1f;
         }
         return desiredPosition;
-
     }
-
 }

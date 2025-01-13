@@ -1,14 +1,19 @@
+using System.Collections;
 using UnityEngine;
 
 public class Shooting : MonoBehaviour
 {
     public Camera mainCamera;
+    public float delayTime = 0.3f;
+    private bool isDelay ;
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0)&&!isDelay)
         {
+            isDelay = true;
             FireRaycast();
+            StartCoroutine(CountAttackDelay());
         }
     }
 
@@ -32,5 +37,11 @@ public class Shooting : MonoBehaviour
         }
 
         Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red, 2f);
+    }
+
+    IEnumerator CountAttackDelay()
+    {
+        yield return new WaitForSeconds(delayTime);
+        isDelay = false;
     }
 }
