@@ -15,9 +15,14 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Shooting shooting;
     private bool isDistanceZero = false;
 
-
+    public void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked; // Lock 상태로 설정
+        Cursor.visible = false;
+    }
     public void Update()
     {
+
         if (Input.GetKeyDown(KeyCode.F))
         {
             if (isDistanceZero)
