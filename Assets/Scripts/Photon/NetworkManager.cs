@@ -25,7 +25,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public TMP_Text[] PlayerName;
     public Image[] UserSpace;
     public Image[] ReadyState;
-    public Button ReadyBtn;
+    public TMP_Text ReadyBtn;
     public bool[] IsReady;
 
     [Header("ETC")]
@@ -114,41 +114,69 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        int index = PhotonNetwork.LocalPlayer.ActorNumber;
         LobbyPanel.SetActive(false);
         UsersPanel.SetActive(true);
-        if(index == 1)
+
+        // 모든 UI 초기화
+        for (int i = 0; i < PlayerName.Length; i++)
         {
-            PlayerName[index - 1].text = NickNameInput.text;
-            Color color = UserSpace[index - 1].color;
-            color.a = Mathf.Clamp01(1);
-            UserSpace[index - 1].color = color;
-        }else if(index == 2)
+            PlayerName[i].text = "Waiting...";
+            Color color = UserSpace[i].color;
+            color.a = 0.5f;
+            UserSpace[i].color = color;
+
+            Color readyColor = ReadyState[i].color;
+            readyColor.a = 0.2f;
+            ReadyState[i].color = readyColor;
+
+            IsReady[i] = false;
+        }
+
+        // 플레이어 UI 업데이트
+        foreach (KeyValuePair<int, Player> entry in PhotonNetwork.CurrentRoom.Players)
         {
-            PlayerName[index - 1].text = NickNameInput.text;
-            Color color = UserSpace[index - 1].color;
-            color.a = Mathf.Clamp01(1);
-            UserSpace[index - 1].color = color;
+            int index = entry.Value.ActorNumber - 1;
+            Player player = entry.Value;
+
+            PlayerName[index].text = player.NickName;
+
+            Color color = UserSpace[index].color;
+            color.a = 1;
+            UserSpace[index].color = color;
+
+            // IsReady 상태를 동기화 (필요 시 RPC 또는 다른 방법 사용)
+            bool readyState = IsReady[index];
+            Color readyColor = ReadyState[index].color;
+            readyColor.a = readyState ? 1.0f : 0.2f;
+            ReadyState[index].color = readyColor;
         }
     }
 
+
     public void Ready()
     {
+        if (ReadyBtn.text == "시작") photonView.RPC("GameStart", RpcTarget.All);
         int index = PhotonNetwork.LocalPlayer.ActorNumber;
-        IsReady[index - 1] = true;
-        if (index == 1)
-        {
-            Color color = ReadyState[index - 1].color;
-            color.a = Mathf.Clamp01(1);
-            ReadyState[index - 1].color = color;
-        }
-        else if (index == 2)
-        {
-            Color color = ReadyState[index - 1].color;
-            color.a = Mathf.Clamp01(1);
-            ReadyState[index - 1].color = color;
-        }
+        photonView.RPC("SetReadyState", RpcTarget.All, index - 1);
     }
+
+    [PunRPC]
+    void SetReadyState(int playerIndex)
+    {
+        IsReady[playerIndex] = !IsReady[playerIndex] ? true : false;
+        Color color = ReadyState[playerIndex].color;
+        color.a = color.a != 1.0f ? 1.0f : 0.2f;
+        ReadyState[playerIndex].color = color;
+        if (PhotonNetwork.IsMasterClient && IsReady[0] && IsReady[1]) ReadyBtn.text = "시작";
+        else ReadyBtn.text = "준비";
+    }
+
+    [PunRPC]
+    void GameStart()
+    {
+        PhotonNetwork.LoadLevel("Main");
+    }
+
 
     public override void OnCreateRoomFailed(short returnCode, string message) { RoomInput.text = ""; CreateRoom(); }
 
@@ -156,12 +184,27 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        // 방 정보 갱신, 다른 플레이어가 들어왔을 때 처리 (필요 시)
+        int index = newPlayer.ActorNumber - 1;
+        PlayerName[index].text = newPlayer.NickName;
+
+        Color color = UserSpace[index].color;
+        color.a = 1;
+        UserSpace[index].color = color;
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        // 방 정보 갱신, 플레이어가 나갔을 때 처리 (필요 시)
+        int index = otherPlayer.ActorNumber - 1;
+        PlayerName[index].text = "Waiting...";
+        Color color = UserSpace[index].color;
+        color.a = 0.5f;
+        UserSpace[index].color = color;
+
+        Color readyColor = ReadyState[index].color;
+        readyColor.a = 0.2f;
+        ReadyState[index].color = readyColor;
+
+        IsReady[index] = false;
     }
     #endregion
 }
