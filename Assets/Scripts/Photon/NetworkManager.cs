@@ -6,9 +6,17 @@ using Photon.Realtime;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+    [Header("StartPanel")]
+    public GameObject StartPanel;
+    public Image[] BackGround;
+    public GameObject TutorialPanel;
+    public GameObject[] Pages;
+    int curPage = 0;
+
     [Header("DisconnectPanel")]
     public GameObject DisconnectPanel;
     public TMP_InputField NickNameInput;
@@ -25,15 +33,63 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public TMP_Text[] PlayerName;
     public Image[] UserSpace;
     public Image[] ReadyState;
-    public TMP_Text ReadyBtn;
+    public Button StartBtn;
     public bool[] IsReady;
 
     [Header("ETC")]
     public TMP_Text StatusText;
-    public PhotonView PV;
 
     List<RoomInfo> myList = new List<RoomInfo>();
     int currentPage = 1, maxPage, multiple;
+
+    private void Start()
+    {
+        // 알파값을 1로 늘리며 Fade In
+        for (int i = 0; i < BackGround.Length; i++)
+            BackGround[i].DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+    }
+
+    public void Play()
+    {
+        StartPanel.SetActive(false);
+        DisconnectPanel.SetActive(true);
+    }
+
+    public void OpenTutorial()
+    {
+        curPage = 0;
+        TutorialPanel.SetActive(true);
+        for (int i = 0; i < Pages.Length; i++)
+        {
+            if (i == curPage) Pages[i].SetActive(true);
+            else Pages[i].SetActive(false);
+        }
+    }
+
+    public void CloseTutorial()
+    {
+        TutorialPanel.SetActive(false);
+    }
+
+    public void Previous()
+    {
+        curPage = curPage > 0 ? curPage - 1 : curPage;
+        for (int i = 0; i < Pages.Length; i++)
+        {
+            if (i == curPage) Pages[i].SetActive(true);
+            else Pages[i].SetActive(false);
+        }
+    }
+
+    public void Next()
+    {
+        curPage = curPage < Pages.Length - 1 ? curPage + 1 : curPage;
+        for (int i = 0; i < Pages.Length; i++)
+        {
+            if (i == curPage) Pages[i].SetActive(true);
+            else Pages[i].SetActive(false);
+        }
+    }
 
     #region 방리스트 갱신
     public void MyListClick(int num)
@@ -130,6 +186,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             ReadyState[i].color = readyColor;
 
             IsReady[i] = false;
+            StartBtn.interactable = false;
         }
 
         // 플레이어 UI 업데이트
@@ -155,7 +212,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void Ready()
     {
-        if (ReadyBtn.text == "시작") photonView.RPC("GameStart", RpcTarget.All);
         int index = PhotonNetwork.LocalPlayer.ActorNumber;
         photonView.RPC("SetReadyState", RpcTarget.All, index - 1);
     }
@@ -167,8 +223,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Color color = ReadyState[playerIndex].color;
         color.a = color.a != 1.0f ? 1.0f : 0.2f;
         ReadyState[playerIndex].color = color;
-        if (PhotonNetwork.IsMasterClient && IsReady[0] && IsReady[1]) ReadyBtn.text = "시작";
-        else ReadyBtn.text = "준비";
+        if (PhotonNetwork.IsMasterClient && IsReady[0] && IsReady[1])
+        {
+            StartBtn.interactable = true;
+        }
+    }
+
+    public void StartGame()
+    {
+        if (IsReady[0] && IsReady[1]) photonView.RPC("GameStart", RpcTarget.All);
     }
 
     [PunRPC]
