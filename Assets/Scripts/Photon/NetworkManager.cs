@@ -17,8 +17,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public GameObject[] Pages;
     int curPage = 0;
 
-    [Header("DisconnectPanel")]
-    public GameObject DisconnectPanel;
+    [Header("NicknamePanel")]
+    public GameObject NicknamePanel;
     public TMP_InputField NickNameInput;
 
     [Header("LobbyPanel")]
@@ -52,7 +52,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public void Play()
     {
         StartPanel.SetActive(false);
-        DisconnectPanel.SetActive(true);
+        NicknamePanel.SetActive(true);
     }
 
     public void OpenTutorial()
@@ -89,6 +89,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             if (i == curPage) Pages[i].SetActive(true);
             else Pages[i].SetActive(false);
         }
+    }
+
+    public void ExitNicknamePanel()
+    {
+        StartPanel.SetActive(true);
+        NicknamePanel.SetActive(false);
+    }
+    public void ExitUsersPanel()
+    {
+        LobbyPanel.SetActive(true);
+        UsersPanel.SetActive(false);
+        PhotonNetwork.LeaveRoom();
     }
 
     #region 방리스트 갱신
@@ -132,7 +144,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region 서버연결
-    void Awake() => Screen.SetResolution(960, 540, false);
+    void Awake() => Screen.SetResolution(1920, 1080, false);
 
     void Update()
     {
@@ -145,7 +157,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
-        DisconnectPanel.SetActive(false);
+        NicknamePanel.SetActive(false);
         LobbyPanel.SetActive(true);
         PhotonNetwork.LocalPlayer.NickName = NickNameInput.text;
         myList.Clear();
@@ -155,7 +167,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        DisconnectPanel.SetActive(true);
+        NicknamePanel.SetActive(true);
         LobbyPanel.SetActive(false);
         UsersPanel.SetActive(false);
     }
