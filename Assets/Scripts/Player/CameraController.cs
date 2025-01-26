@@ -30,12 +30,16 @@ public class CameraController : MonoBehaviourPun
     private void LateUpdate()
     {
         if (!photonView.IsMine) return;
-        _mouseInput.x = Input.GetAxis("Mouse X") * mouseSensitivity;
-        _mouseInput.y = Input.GetAxis("Mouse Y") * mouseSensitivity;
-        playerBody.Rotate(Vector3.up, _mouseInput.x);
-        _currentRotationY -= _mouseInput.y;
-        _currentRotationY = Mathf.Clamp(_currentRotationY,minVerticalAngle,maxVerticalAngle);
-        cam.localRotation = Quaternion.Euler(_currentRotationY, 0, 0);
-
+        if (GameManager.Instance.settingPanelInstance.activeSelf) Cursor.lockState = CursorLockMode.None;
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            _mouseInput.x = Input.GetAxis("Mouse X") * mouseSensitivity;
+            _mouseInput.y = Input.GetAxis("Mouse Y") * mouseSensitivity;
+            playerBody.Rotate(Vector3.up, _mouseInput.x);
+            _currentRotationY -= _mouseInput.y;
+            _currentRotationY = Mathf.Clamp(_currentRotationY, minVerticalAngle, maxVerticalAngle);
+            cam.localRotation = Quaternion.Euler(_currentRotationY, 0, 0);
+        }
     }
 }

@@ -10,9 +10,17 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField] private WeaponHeld weaponHeld;
 
 
+    private void Start()
+    { 
+        if (!photonView.IsMine) return;
+        GameManager.Instance.CreateSettingPanel();
+    }
+
     private void Update()
     {
         if (!photonView.IsMine) return;
+        if (GameManager.Instance.settingPanelInstance.activeSelf) playerInput.enabled = true;
+        else playerInput.enabled = false;
         playerMoveMent.MoveByInput(playerInput.GetMoveInput());
 
         if (playerInput.GetJumpInput())
