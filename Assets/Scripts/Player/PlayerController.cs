@@ -19,8 +19,6 @@ public class PlayerController : MonoBehaviourPun
     private void Update()
     {
         if (!photonView.IsMine) return;
-        if (GameManager.Instance.settingPanelInstance.activeSelf) playerInput.enabled = true;
-        else playerInput.enabled = false;
         playerMoveMent.MoveByInput(playerInput.GetMoveInput());
 
         if (playerInput.GetJumpInput())
@@ -30,7 +28,7 @@ public class PlayerController : MonoBehaviourPun
         playerMoveMent.ImplementGravity();
 
         int num = playerInput.GetNumberInput();
-        if(num >= 0)
+        if (num >= 0)
         {
             weaponHeld.HoldWeapon(num);
         }
