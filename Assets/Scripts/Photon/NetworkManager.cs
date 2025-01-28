@@ -21,16 +21,28 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public GameObject NicknamePanel;
     public TMP_InputField NickNameInput;
 
+    [Header("LobbyPanel")]
+    public GameObject LobbyPanel;
+    public TMP_Text CurrentNick;
+    public Button CharacterBtn;
+    public Button CreateRoomBtn;
+    public Button FindRoomBtn;
+
     [Header("CharacterPanel")]
     public GameObject CharacterPanel;
     public GameObject[] CharacterInfo;
     public TMP_Text SelectState;
-    public Button NextPage;
+    public Button Left;
+    public Button Right;
+    public TMP_Text CantExit;
     int curInfo = 0;
 
-    [Header("LobbyPanel")]
-    public GameObject LobbyPanel;
+    [Header("CreaterRoomPanel")]
+    public GameObject CreateRoomPanel;
     public TMP_InputField RoomInput;
+
+    [Header("FindRoomPanel")]
+    public GameObject FindRoomPanel;
     public Button[] CellBtn;
     public Button PreviousBtn;
     public Button NextBtn;
@@ -99,23 +111,39 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void ExitNicknamePanel()
+    public void Exit()
     {
-        StartPanel.SetActive(true);
-        NicknamePanel.SetActive(false);
-    }
-
-    public void ExitLobbyPanel()
-    {
-        CharacterPanel.SetActive(true);
-        LobbyPanel.SetActive(false);
-    }
-
-    public void ExitUsersPanel()
-    {
-        LobbyPanel.SetActive(true);
-        UsersPanel.SetActive(false);
-        PhotonNetwork.LeaveRoom();
+        if (NicknamePanel.activeSelf)
+        {
+            StartPanel.SetActive(true);
+            NicknamePanel.SetActive(false);
+        }else if (CharacterPanel.activeSelf)
+        {
+            if(SelectState.text != "선택완료")
+            {
+                Sequence fadeSequence = DOTween.Sequence();
+                fadeSequence.Append(CantExit.DOFade(1f, 0.5f).SetEase(Ease.InOutQuad));
+                fadeSequence.AppendInterval(1f);
+                fadeSequence.Append(CantExit.DOFade(0f, 0.5f).SetEase(Ease.InOutQuad));
+                fadeSequence.Play();
+                return;
+            }
+            LobbyPanel.SetActive(true);
+            CharacterPanel.SetActive(false);
+        }else if (CreateRoomPanel.activeSelf)
+        {
+            LobbyPanel.SetActive(true);
+            CreateRoomPanel.SetActive(false);
+        }else if (FindRoomPanel.activeSelf)
+        {
+            LobbyPanel.SetActive(true);
+            FindRoomPanel.SetActive(false);
+        }else if (UsersPanel.activeSelf)
+        {
+            LobbyPanel.SetActive(true);
+            UsersPanel.SetActive(false);
+            PhotonNetwork.LeaveRoom();
+        }
     }
 
     public void LeftCharacter()
@@ -144,14 +172,32 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         SelectState.text = SelectState.text == "선택" ? "선택완료" : "선택";
         GameManager.Instance.myCharacter = curInfo;
-        if (SelectState.text == "선택완료") NextPage.interactable = true;
-        else NextPage.interactable = false;
+        if(SelectState.text == "선택완료")
+        {
+            Left.interactable = false;
+            Right.interactable = false;
+        }
+        else {
+            Left.interactable = true;
+            Right.interactable = true;
+        }
     }
 
-    public void Next2()
+    public void EnterCharacterPanel()
     {
-        CharacterPanel.SetActive(false);
-        LobbyPanel.SetActive(true);
+        LobbyPanel.SetActive(false);
+        CharacterPanel.SetActive(true);
+    }
+    public void EnterCreateRoomPanel()
+    {
+        LobbyPanel.SetActive(false);
+        CreateRoomPanel.SetActive(true);
+    }
+    public void EnterFindRoomPanel()
+    {
+        LobbyPanel.SetActive(false);
+        FindRoomPanel.SetActive(true);
+
     }
 
     #region 방리스트 갱신
@@ -209,15 +255,17 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         NicknamePanel.SetActive(false);
+        LobbyPanel.SetActive(true);
         if (!already)
         {
             curInfo = 0;
             SelectState.text = "선택";
-            NextPage.interactable = false;
-            CharacterPanel.SetActive(true);
+            Left.interactable = true;
+            Right.interactable = true;
         }
         already = true;
         PhotonNetwork.LocalPlayer.NickName = NickNameInput.text;
+        CurrentNick.text = PhotonNetwork.LocalPlayer.NickName;
         myList.Clear();
     }
 
@@ -230,7 +278,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         NicknamePanel.SetActive(true);
-        CharacterPanel.SetActive(false);
+        LobbyPanel.SetActive(false);
     }
     #endregion
 
@@ -243,7 +291,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        LobbyPanel.SetActive(false);
+        CreateRoomPanel.SetActive(false);
+        FindRoomPanel.SetActive(false);
         UsersPanel.SetActive(true);
 
         // 모든 UI 초기화
