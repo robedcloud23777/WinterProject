@@ -312,10 +312,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
 
         // 플레이어 UI 업데이트
-        foreach (KeyValuePair<int, Player> entry in PhotonNetwork.CurrentRoom.Players)
+        foreach (KeyValuePair<int, Photon.Realtime.Player> entry in PhotonNetwork.CurrentRoom.Players)
         {
             int index = entry.Value.ActorNumber - 1;
-            Player player = entry.Value;
+            Photon.Realtime.Player player = entry.Value;
 
             PlayerName[index].text = player.NickName;
 
@@ -367,7 +367,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinRandomFailed(short returnCode, string message) { RoomInput.text = ""; CreateRoom(); }
 
-    public override void OnPlayerEnteredRoom(Player newPlayer)
+    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
     {
         int index = newPlayer.ActorNumber - 1;
         PlayerName[index].text = newPlayer.NickName;
@@ -377,7 +377,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         UserSpace[index].color = color;
     }
 
-    public override void OnPlayerLeftRoom(Player otherPlayer)
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
         int index = otherPlayer.ActorNumber - 1;
         PlayerName[index].text = "Waiting...";
