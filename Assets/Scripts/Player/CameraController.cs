@@ -9,7 +9,7 @@ public class CameraController : MonoBehaviourPun
     [SerializeField] private Transform playerBody;
     [SerializeField] private Transform playerHead;
     [SerializeField] private Transform cam;
-    [SerializeField] private float cameraDistance = 5f;
+    [SerializeField] private float cameraDistance = 2.5f;
     [SerializeField] private float mouseSensitivity = 2f;
     [SerializeField] private LayerMask collisionLayer;
     private Vector2 _mouseInput;
@@ -64,7 +64,7 @@ public class CameraController : MonoBehaviourPun
         _currentRotationY = Mathf.Clamp(_currentRotationY, minVerticalAngle, maxVerticalAngle);
         cam.localRotation = Quaternion.Euler(_currentRotationY, 0, 0);
 
-        Vector3 desiredPosition = playerHead.position + cam.forward * -cameraDistance;
+        Vector3 desiredPosition = playerHead.position + cam.forward * -cameraDistance + cam.right * 0.3f;
         Vector3 finalPosition = CheckCameraCollision(desiredPosition);
 
         cam.position = finalPosition;

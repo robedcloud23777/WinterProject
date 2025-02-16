@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 5f;
+    public float moveSpeed = 5f;
     [SerializeField] private CharacterController controller;
     private Vector3 _moveDirection;
     [SerializeField] private float jumpHeight = 2f;
@@ -14,7 +14,6 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 _velocity;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundDistance;
-    [SerializeField] private LayerMask groundLayer;
 
     public void MoveByInput(Vector2 input)
     {
@@ -26,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isGround()
     {
-        return Physics.CheckSphere(groundCheck.position, groundDistance, groundLayer);
+        return Physics.Raycast(groundCheck.position, Vector3.down, groundDistance);
     }
 
     private float GetGravity()

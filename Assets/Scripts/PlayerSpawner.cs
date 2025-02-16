@@ -3,6 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class ScenePlayerSpawner : MonoBehaviour
 {
+    public GameObject[] spawner;
+
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -17,7 +19,7 @@ public class ScenePlayerSpawner : MonoBehaviour
     {
         if (scene.name == "Main")
         {
-            GameManager.Instance.SpawnPlayer(); 
+            GameManager.Instance.SpawnPlayer(spawner[0].transform.position);
         }
     }
 }

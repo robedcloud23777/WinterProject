@@ -19,17 +19,27 @@ public class PlayerInput : MonoBehaviour
         return Input.GetKeyDown(KeyCode.Space);
     }
 
-    public int GetNumberInput()
+    public bool GetCrouchInput()
     {
-        if (GameManager.Instance.settingPanelInstance.activeSelf) return -1;
-        for (int i = 0; i < 9; ++i)
-        {
-            int index = i;
-            if(Input.GetKeyDown(KeyCode.Alpha1 + index))
-            {
-                return index;
-            }
-        }
-        return -1;
+        if (GameManager.Instance.settingPanelInstance.activeSelf) return false;
+        return Input.GetKey(KeyCode.LeftControl);
+    }
+
+    public bool GetRunInput()
+    {
+        if (GameManager.Instance.settingPanelInstance.activeSelf) return false;
+        return Input.GetKey(KeyCode.LeftShift);
+    }
+
+    public bool GetShootInput()
+    {
+        if (GameManager.Instance.settingPanelInstance.activeSelf) return false;
+        return Input.GetMouseButton(0);
+    }
+
+    public bool GetZoomInput()
+    {
+        if (GameManager.Instance.settingPanelInstance.activeSelf) return false;
+        return Input.GetMouseButton(1);
     }
 }

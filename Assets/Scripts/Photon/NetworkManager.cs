@@ -31,6 +31,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     [Header("CharacterPanel")]
     public GameObject CharacterPanel;
     public GameObject[] CharacterInfo;
+    public GameObject[] Characters;
     public TMP_Text SelectState;
     public Button Left;
     public Button Right;
@@ -130,7 +131,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             }
             LobbyPanel.SetActive(true);
             CharacterPanel.SetActive(false);
-        }else if (CreateRoomPanel.activeSelf)
+            Characters[curInfo].SetActive(false);
+        }
+        else if (CreateRoomPanel.activeSelf)
         {
             LobbyPanel.SetActive(true);
             CreateRoomPanel.SetActive(false);
@@ -152,8 +155,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         curInfo--;
         for (int i = 0; i < CharacterInfo.Length; i++)
         {
-            if(i == curInfo) CharacterInfo[i].SetActive(true);
-            else CharacterInfo[i].SetActive(false);
+            if (i == curInfo)
+            {
+                CharacterInfo[i].SetActive(true);
+                Characters[i].SetActive(true);
+            }
+            else
+            {
+                CharacterInfo[i].SetActive(false);
+                Characters[i].SetActive(false);
+            }
         }
     }
 
@@ -163,8 +174,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         curInfo++;
         for (int i = 0; i < CharacterInfo.Length; i++)
         {
-            if (i == curInfo) CharacterInfo[i].SetActive(true);
-            else CharacterInfo[i].SetActive(false);
+            if (i == curInfo)
+            {
+                CharacterInfo[i].SetActive(true);
+                Characters[i].SetActive(true);
+            }
+            else
+            {
+                CharacterInfo[i].SetActive(false);
+                Characters[i].SetActive(false);
+            }
         }
     }
 
@@ -187,6 +206,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         LobbyPanel.SetActive(false);
         CharacterPanel.SetActive(true);
+        Characters[curInfo].SetActive(true);
     }
     public void EnterCreateRoomPanel()
     {

@@ -9,88 +9,96 @@ public class PlayerAnimation : MonoBehaviour
     public void Take()
     {
         playerAnimator.SetTrigger("TAKE");
+        StartCoroutine(ResetTriggerAfterFrame("TAKE"));
     }
 
     public void Put()
     {
         playerAnimator.SetTrigger("PUT");
+        StartCoroutine(ResetTriggerAfterFrame("PUT"));
     }
 
     public void Idle()
     {
         playerAnimator.SetTrigger("IDLE");
+        StartCoroutine(ResetTriggerAfterFrame("IDLE"));
     }
 
     public void Walk()
     {
         playerAnimator.SetTrigger("WALK");
+        StartCoroutine(ResetTriggerAfterFrame("WALK"));
     }
 
     public void Run()
     {
         playerAnimator.SetTrigger("RUN");
+        StartCoroutine(ResetTriggerAfterFrame("RUN"));
     }
 
     public void CrouchIdle()
     {
-        playerAnimator.SetTrigger("CROUNCH IDLE");
+        playerAnimator.SetTrigger("CROUCH IDLE");
+        StartCoroutine(ResetTriggerAfterFrame("CROUCH IDLE"));
     }
 
     public void CrouchWalk()
     {
-        playerAnimator.SetTrigger("CROUNCH WALK");
+        playerAnimator.SetTrigger("CROUCH WALK");
+        StartCoroutine(ResetTriggerAfterFrame("CROUCH WALK"));
     }
 
     public void CrouchJog()
     {
-        playerAnimator.SetTrigger("CROUNCH JOG");
+        playerAnimator.SetTrigger("CROUCH JOG");
+        StartCoroutine(ResetTriggerAfterFrame("CROUCH JOG"));
     }
 
     public void Hit()
     {
         playerAnimator.SetTrigger("HIT1");
+        StartCoroutine(ResetTriggerAfterFrame("HIT1"));
     }
 
     public void Die()
     {
-        playerAnimator.SetTrigger("DIE2");// Çìµå¼¦´À³¦
+        playerAnimator.SetTrigger("DIE2");
+        StartCoroutine(ResetTriggerAfterFrame("DIE2"));
     }
 
-    //ÃÑ ½î´Â ÁßÀÇ ¾Ö´Ï¸ÞÀÌ¼Ç
     public void Shoot()
     {
         playerAnimator.SetTrigger("IDLE 0");
+        StartCoroutine(ResetTriggerAfterFrame("IDLE 0"));
     }
 
-    public void S_Jog()
+    public void S_Run()
     {
         playerAnimator.SetTrigger("JOG");
-    }
-    public void S_WalkForward()
-    {
-        playerAnimator.SetTrigger("WALK F");
-    }
-    public void S_WalkBack()
-    {
-        playerAnimator.SetTrigger("WALK B");
-    }
-    public void S_WalkRight()
-    {
-        playerAnimator.SetTrigger("WALK R");
+        StartCoroutine(ResetTriggerAfterFrame("JOG"));
     }
 
-    public void S_WalkLeft()
+    public void S_Walk()
     {
-        playerAnimator.SetTrigger("WALK L");
+        playerAnimator.SetTrigger("WALK F");
+        StartCoroutine(ResetTriggerAfterFrame("WALK F"));
     }
 
     public void S_CrounchShoot()
     {
-        playerAnimator.SetTrigger("CROUNCH IDLE 0");
+        playerAnimator.SetTrigger("CROUCH IDLE 0");
+        StartCoroutine(ResetTriggerAfterFrame("CROUCH IDLE 0"));
     }
 
     public void S_CrounchWalk()
     {
-        playerAnimator.SetTrigger("CROUNCH WALK 0");
+        playerAnimator.SetTrigger("CROUCH WALK 0");
+        StartCoroutine(ResetTriggerAfterFrame("CROUCH WALK 0"));
+    }
+
+    IEnumerator ResetTriggerAfterFrame(string triggerName)
+    {
+        yield return null; // ÇÑ ÇÁ·¹ÀÓ ´ë±â
+        playerAnimator.ResetTrigger(triggerName);
     }
 }

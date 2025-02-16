@@ -11,9 +11,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     public static GameManager Instance { get; private set; }
 
     public int myCharacter; //0은 타카하시, 1은 야마구치, 2는 이시카와
-    public Vector3 spawnPoint = Vector3.zero;
     public GameObject settingPanelPrefab; // 설정 패널 프리팹
     public GameObject settingPanelInstance; // 생성된 패널 인스턴스
+    private string[] characters = { "Player 1", "Player 2", "Player 3" };
 
     private void Awake()
     {
@@ -42,9 +42,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         }    
     }
 
-    public void SpawnPlayer()
+    public void SpawnPlayer(Vector3 spawnPoint)
     {
-        PhotonNetwork.Instantiate("Player", spawnPoint, Quaternion.identity);
+        PhotonNetwork.Instantiate(characters[myCharacter], spawnPoint, Quaternion.identity);
     }
 
 
