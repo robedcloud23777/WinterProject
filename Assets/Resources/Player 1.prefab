@@ -9041,12 +9041,12 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 1.6
-  m_Radius: 0.5
+  m_Radius: 0.3
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.08, z: 0}
 --- !u!114 &3450565293647210273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9063,6 +9063,9 @@ MonoBehaviour:
   playerMovement: {fileID: 689499046621065862}
   playerBody: {fileID: 1440658802223402405}
   playerAnimation: {fileID: 5925426011107834346}
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &2773640192089426793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9089,10 +9092,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   controller: {fileID: 5928934502122077058}
-  jumpHeight: 3
+  jumpHeight: 2
   gravityMultiply: 2
   groundCheck: {fileID: 3804426917017568785}
   groundDistance: 0.2
+  maxJumps: 1
 --- !u!114 &8862624033776410967
 MonoBehaviour:
   m_ObjectHideFlags: 0

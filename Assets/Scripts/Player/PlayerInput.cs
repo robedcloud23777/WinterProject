@@ -42,4 +42,16 @@ public class PlayerInput : MonoBehaviour
         if (GameManager.Instance.settingPanelInstance.activeSelf) return false;
         return Input.GetMouseButton(1);
     }
+
+    public bool GetQInput()
+    {
+        if (GameManager.Instance.settingPanelInstance.activeSelf) return false;
+        return Input.GetKeyDown(KeyCode.Q);
+    }
+
+    public bool GetEInput()
+    {
+        if (GameManager.Instance.settingPanelInstance.activeSelf) return false;
+        return Input.GetKeyDown(KeyCode.E);
+    }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using TMPro;
 
 public class PlayerController : MonoBehaviourPun
 {
@@ -9,16 +10,21 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private GameObject playerBody;
     [SerializeField] private PlayerAnimation playerAnimation;
+    [SerializeField] private SkillUi skillUi;
+    [SerializeField] private LayerMask obstacleLayer;
     private bool isMove;
     private bool isRun;
     private bool isCrouch;
     private bool isZoom;
     private bool isShoot;
-
+    private bool isSpeedBoost;
+ 
     private void Start()
-    { 
+    {
+        skillUi = GameObject.Find("Canvas").GetComponent<SkillUi>();
         if (!photonView.IsMine) return;
         GameManager.Instance.CreateSettingPanel();
+        skillUi.InitSkillUi();
     }
 
     private void Update()
@@ -30,22 +36,27 @@ public class PlayerController : MonoBehaviourPun
         isZoom = playerInput.GetZoomInput();
         isShoot = playerInput.GetShootInput();
 
-        if (isRun) playerMovement.moveSpeed = 10.0f;
-        else playerMovement.moveSpeed = 5.0f;
-        if (isCrouch) playerMovement.moveSpeed /= 3;
-        playerMovement.MoveByInput(playerInput.GetMoveInput());
-
-        if (playerInput.GetJumpInput())
+        if (!isSpeedBoost)
         {
-            playerMovement.JumpByInput();
+            playerMovement.moveSpeed = isRun ? 10.0f : 5.0f;
+            if (isCrouch) playerMovement.moveSpeed /= 3;
         }
+
+        if (playerInput.GetQInput()) QSkill(GameManager.Instance.myCharacter);
+        if (playerInput.GetEInput()) ESkill(GameManager.Instance.myCharacter);
+        PassiveSkill(GameManager.Instance.myCharacter);
+
+        playerMovement.MoveByInput(playerInput.GetMoveInput());
+        if (playerInput.GetJumpInput()) playerMovement.JumpByInput();
         playerMovement.ImplementGravity();
 
         CurrnetAnimation();
     }
 
-    public void CurrnetAnimation()
+    private void CurrnetAnimation()
     {
+        if (GameManager.Instance.settingPanelInstance.activeSelf) return;
+
         isMove = Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0;
         if (isMove)
         {
@@ -89,5 +100,64 @@ public class PlayerController : MonoBehaviourPun
                 else playerAnimation.Idle();
             }
         }
+    }
+
+    private void QSkill(int playerNum)
+    {
+        if (playerNum == 0 && !isSpeedBoost)
+        {
+            StartCoroutine(SpeedBoostCoroutine(10f, 1.5f));
+        }
+    }
+
+    private void ESkill(int playerNum)
+    {
+        if (playerNum == 0)
+        {
+            playerMovement.controller.enabled = false;
+            Vector3 targetPosition = transform.position + transform.forward * 10f;
+            RaycastHit hit;
+
+            if (Physics.Raycast(transform.position, transform.forward, out hit, 10f, obstacleLayer))
+            {
+                targetPosition = hit.point - transform.forward * 0.3f;
+            }
+            transform.position = targetPosition;
+            playerMovement.controller.enabled = true;
+        }
+        else if (playerNum == 1)
+        {
+            //데미지 2배
+        }
+        else if (playerNum == 2)
+        {
+            playerMovement.SuperJump();
+        }
+    }
+
+    private void PassiveSkill(int playerNum)
+    {
+        if (playerNum == 2)
+        {
+            playerMovement.jumpHeight = 2;
+        }
+    }
+
+    IEnumerator SpeedBoostCoroutine(float duration, float boostMultiplier)
+    {
+        isSpeedBoost = true;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            playerMovement.moveSpeed = (isRun ? 10.0f : 5.0f);
+            if (isCrouch) playerMovement.moveSpeed /= 3;
+            playerMovement.moveSpeed *= boostMultiplier;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        isSpeedBoost = false;
     }
 }
