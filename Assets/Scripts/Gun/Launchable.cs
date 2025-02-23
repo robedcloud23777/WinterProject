@@ -2,17 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Reroad : MonoBehaviour
+public class Launchable : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public int Bullet = 30;
+
+    public bool IsShoot()
     {
-        
+        if (Bullet > 0)
+        {
+            return true;
+        }
+        else
+        {
+            StartCoroutine(Reload());
+            return false;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator Reload()
     {
-        
+        yield return new WaitForSeconds(3f);
+        Bullet = 30;
     }
 }

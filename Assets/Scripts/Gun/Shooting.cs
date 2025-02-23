@@ -11,10 +11,10 @@ public class Shooting : MonoBehaviour
     private bool isDelay;
     private int shotIndex = 0;
     private float lastShotTime;
-
+    public Launchable launchable;
     void Update()
     {
-        if (Input.GetMouseButton(0) && !isDelay)
+        if (Input.GetMouseButton(0) && !isDelay&&launchable.IsShoot()== true)
         {
             isDelay = true;
             FireRaycast();
@@ -44,10 +44,12 @@ public class Shooting : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             Debug.Log("물체 맞음");
+            launchable.Bullet--;
         }
         else
         {
             Debug.Log("빗나감");
+            launchable.Bullet--;
         }
 
         Debug.DrawRay(ray.origin, shootDirection * 100f, Color.red, 2f);
