@@ -15,6 +15,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject settingPanelInstance; // 생성된 패널 인스턴스
     private string[] characters = { "Player 1", "Player 2", "Player 3" };
 
+    public float time = 600f;
+    public bool timerIsRunning = false;
+
     private void Awake()
     {
         if (Instance == null)
@@ -39,7 +42,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ToggleSettingPanel();
-        }    
+        }
+        if (timerIsRunning)
+        {
+            time -= Time.deltaTime;
+        }
     }
 
     public void SpawnPlayer(Vector3 spawnPoint)

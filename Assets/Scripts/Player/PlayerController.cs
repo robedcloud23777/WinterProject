@@ -10,8 +10,9 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private GameObject playerBody;
     [SerializeField] private PlayerAnimation playerAnimation;
-    [SerializeField] private SkillUi skillUi;
+    [SerializeField] private PlayerUi playerUi;
     [SerializeField] private LayerMask obstacleLayer;
+    [SerializeField] private int hp = 131;
     private bool isMove;
     private bool isRun;
     private bool isCrouch;
@@ -23,16 +24,17 @@ public class PlayerController : MonoBehaviourPun
 
     private void Start()
     {
-        skillUi = GameObject.Find("Canvas").GetComponent<SkillUi>();
+        playerUi = GameObject.Find("Canvas").GetComponent<PlayerUi>();
         if (!photonView.IsMine) return;
         GameManager.Instance.CreateSettingPanel();
-        skillUi.InitSkillUi();
-        skillUi.InitNickname(PhotonNetwork.LocalPlayer.NickName);
+        playerUi.InitSkillUi();
+        playerUi.InitNickname(PhotonNetwork.LocalPlayer.NickName);
     }
 
     private void Update()
     {
         if (!photonView.IsMine) return;
+        playerUi.UpdateHpDisplay(hp);
         playerBody.transform.localPosition = new Vector3(0, -0.8f, 0); // 애니메이션할 때 튀어나가서 고정
         isRun = playerInput.GetRunInput();
         isCrouch = playerInput.GetCrouchInput();
@@ -44,9 +46,10 @@ public class PlayerController : MonoBehaviourPun
             playerMovement.moveSpeed = isRun ? 10.0f : 5.0f;
             if (isCrouch) playerMovement.moveSpeed /= 3;
         }
+        if (playerUi.isCountdown) playerMovement.moveSpeed = 0;
 
-        if (playerInput.GetQInput()) QSkill(GameManager.Instance.myCharacter);
-        if (playerInput.GetEInput()) ESkill(GameManager.Instance.myCharacter);
+        if (playerInput.GetQInput() && !playerUi.isCountdown) QSkill(GameManager.Instance.myCharacter);
+        if (playerInput.GetEInput() && !playerUi.isCountdown) ESkill(GameManager.Instance.myCharacter);
         PassiveSkill(GameManager.Instance.myCharacter);
 
         playerMovement.MoveByInput(playerInput.GetMoveInput());
@@ -110,7 +113,7 @@ public class PlayerController : MonoBehaviourPun
         if (playerNum == 0 && !isSpeedBoost && QAmmo[0] > 0)
         {
             StartCoroutine(SpeedBoostCoroutine(10f, 1.5f));
-            skillUi.T_QSkill(QAmmo[0]);
+            playerUi.T_QSkill(QAmmo[0]);
             QAmmo[0]--;
         }
         else if (playerNum == 1)
@@ -121,7 +124,7 @@ public class PlayerController : MonoBehaviourPun
         {
             return;
         }
-        else skillUi.CantUse();
+        else playerUi.CantUse();
     }
 
     private void ESkill(int playerNum)
@@ -138,21 +141,21 @@ public class PlayerController : MonoBehaviourPun
             }
             transform.position = targetPosition;
             playerMovement.controller.enabled = true;
-            skillUi.T_ESkill(EAmmo[0]);
+            playerUi.T_ESkill(EAmmo[0]);
             EAmmo[0]--;
         }
         else if (playerNum == 1 && EAmmo[1] > 0)
         {
             //데미지 2배
-            skillUi.Y_ESkill(EAmmo[1]);
+            playerUi.Y_ESkill(EAmmo[1]);
             EAmmo[1]--;
         }
         else if (playerNum == 2 && EAmmo[2] > 0)
         {
             playerMovement.SuperJump();
-            skillUi.I_ESkill(EAmmo[2]);
+            playerUi.I_ESkill(EAmmo[2]);
             EAmmo[2]--;
-        } else skillUi.CantUse();
+        } else playerUi.CantUse();
     }
 
     private void PassiveSkill(int playerNum)

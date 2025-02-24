@@ -6,7 +6,7 @@ using TMPro;
 using DG.Tweening;
 using System.Text.RegularExpressions;
 
-public class SkillUi : MonoBehaviour
+public class PlayerUi : MonoBehaviour
 {
     public GameObject[] skillUi;
 
@@ -18,6 +18,24 @@ public class SkillUi : MonoBehaviour
     public Image[] y_EAmmo;
     public Image[] i_QAmmo;
     public Image[] i_EAmmo;
+
+    public Image[] hpBars;
+
+    public TMP_Text timer;
+
+    public GameObject countdownUi;
+    public TMP_Text countdownText;
+    public bool isCountdown = false;
+
+    private void Start()
+    {
+        StartCoroutine(StartCountdown());
+    }
+
+    private void Update()
+    {
+        UpdateTimerDisplay(GameManager.Instance.time);
+    }
 
     public void InitSkillUi()
     {
@@ -69,5 +87,43 @@ public class SkillUi : MonoBehaviour
         fadeSequence.AppendInterval(1f);
         fadeSequence.Append(cantUse.DOFade(0f, 0.5f).SetEase(Ease.InOutQuad));
         fadeSequence.Play();
+    }
+
+    public void UpdateHpDisplay(int hp)
+    {
+        for (int i = 15; i > hp / 10; i--)
+        {
+            HpLost(hpBars[i-1]);
+        }
+    }
+
+    private void HpLost(Image hpBar)
+    {
+        Color color = hpBar.color;
+        color.a = 0.3f;
+        hpBar.color = color;
+    }
+
+    public void UpdateTimerDisplay(float time)
+    {
+   
+            int minutes = Mathf.FloorToInt(time / 60);
+            int seconds = Mathf.FloorToInt(time % 60);
+            timer.text = minutes + " : " + seconds;
+    }
+
+    public IEnumerator StartCountdown()
+    {
+        countdownUi.SetActive(true);
+        isCountdown = true;
+        for (int i = 3; i > 0; i--)
+        {
+            countdownText.text = i.ToString();
+            yield return new WaitForSeconds(1f);
+        }
+        countdownUi.SetActive(false);
+
+        isCountdown = false;
+        GameManager.Instance.timerIsRunning = true;
     }
 }
