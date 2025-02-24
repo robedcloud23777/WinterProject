@@ -12,9 +12,13 @@ public class Shooting : MonoBehaviour
     private int shotIndex = 0;
     private float lastShotTime;
     public Launchable launchable;
+    public BulletMark bulletMark;
+
+
+
     void Update()
     {
-        if (Input.GetMouseButton(0) && !isDelay&&launchable.IsShoot()== true)
+        if (Input.GetMouseButton(0) && !isDelay && launchable.IsShoot() == true)
         {
             isDelay = true;
             FireRaycast();
@@ -33,7 +37,6 @@ public class Shooting : MonoBehaviour
     {
         lastShotTime = Time.time;
 
-        // 점점 커지는 원 안의 랜덤한 위치
         Vector2 recoilOffset = GetRecoilOffset();
         Vector3 shootDirection = mainCamera.transform.forward + mainCamera.transform.right * recoilOffset.x + mainCamera.transform.up * recoilOffset.y;
         shootDirection.Normalize();
@@ -43,8 +46,21 @@ public class Shooting : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            Debug.Log("물체 맞음");
+            Debug.Log("맞은 물체의 레이어: " + LayerMask.LayerToName(hit.collider.gameObject.layer));
+
+            string hitLayerName = LayerMask.LayerToName(hit.collider.gameObject.layer);
             launchable.Bullet--;
+
+            if (hitLayerName == "Player")
+            {
+                //기준아 니가해
+                launchable.Bullet--;
+            }
+            else if (hitLayerName == "map")
+            {
+                bulletMark.MakeMark();
+                launchable.Bullet--;
+            }
         }
         else
         {
@@ -57,10 +73,7 @@ public class Shooting : MonoBehaviour
 
     Vector2 GetRecoilOffset()
     {
-        // 랜덤한 각도 생성
         float randomAngle = Random.Range(0f, 2f * Mathf.PI);
-
-        // 점점 커지는 반동 범위 내에서 랜덤 위치 선택
         float randomRadius = Random.Range(0f, recoilRadius);
         float x = Mathf.Cos(randomAngle) * randomRadius;
         float y = Mathf.Sin(randomAngle) * randomRadius;
