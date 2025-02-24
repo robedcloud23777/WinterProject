@@ -58,7 +58,7 @@ public class Shooting : MonoBehaviour
             }
             else if (hitLayerName == "map")
             {
-                bulletMark.MakeMark();
+                //bulletMark.MakeMark();
                 launchable.Bullet--;
             }
         }
