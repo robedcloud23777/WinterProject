@@ -18,13 +18,16 @@ public class PlayerController : MonoBehaviourPun
     private bool isZoom;
     private bool isShoot;
     private bool isSpeedBoost;
- 
+    private int[] QAmmo = { 2, 0, 0 };
+    private int[] EAmmo = { 1, 2, 1 };
+
     private void Start()
     {
         skillUi = GameObject.Find("Canvas").GetComponent<SkillUi>();
         if (!photonView.IsMine) return;
         GameManager.Instance.CreateSettingPanel();
         skillUi.InitSkillUi();
+        skillUi.InitNickname(PhotonNetwork.LocalPlayer.NickName);
     }
 
     private void Update()
@@ -104,15 +107,26 @@ public class PlayerController : MonoBehaviourPun
 
     private void QSkill(int playerNum)
     {
-        if (playerNum == 0 && !isSpeedBoost)
+        if (playerNum == 0 && !isSpeedBoost && QAmmo[0] > 0)
         {
             StartCoroutine(SpeedBoostCoroutine(10f, 1.5f));
+            skillUi.T_QSkill(QAmmo[0]);
+            QAmmo[0]--;
         }
+        else if (playerNum == 1)
+        {
+            return;
+        }
+        else if (playerNum == 2)
+        {
+            return;
+        }
+        else skillUi.CantUse();
     }
 
     private void ESkill(int playerNum)
     {
-        if (playerNum == 0)
+        if (playerNum == 0 && EAmmo[0] > 0)
         {
             playerMovement.controller.enabled = false;
             Vector3 targetPosition = transform.position + transform.forward * 10f;
@@ -124,15 +138,21 @@ public class PlayerController : MonoBehaviourPun
             }
             transform.position = targetPosition;
             playerMovement.controller.enabled = true;
+            skillUi.T_ESkill(EAmmo[0]);
+            EAmmo[0]--;
         }
-        else if (playerNum == 1)
+        else if (playerNum == 1 && EAmmo[1] > 0)
         {
             //데미지 2배
+            skillUi.Y_ESkill(EAmmo[1]);
+            EAmmo[1]--;
         }
-        else if (playerNum == 2)
+        else if (playerNum == 2 && EAmmo[2] > 0)
         {
             playerMovement.SuperJump();
-        }
+            skillUi.I_ESkill(EAmmo[2]);
+            EAmmo[2]--;
+        } else skillUi.CantUse();
     }
 
     private void PassiveSkill(int playerNum)

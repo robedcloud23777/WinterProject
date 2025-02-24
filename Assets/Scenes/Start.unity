@@ -12092,7 +12092,7 @@ MonoBehaviour:
   - {fileID: 85590772}
   - {fileID: 868389785}
   NicknamePanel: {fileID: 1887950988}
-  NickNameInput: {fileID: 1532623096}
+  NicknameInput: {fileID: 1532623096}
   LobbyPanel: {fileID: 30527956}
   CurrentNick: {fileID: 1344098342}
   CharacterBtn: {fileID: 1301629652}

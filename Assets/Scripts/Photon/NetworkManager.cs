@@ -19,7 +19,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     [Header("NicknamePanel")]
     public GameObject NicknamePanel;
-    public TMP_InputField NickNameInput;
+    public TMP_InputField NicknameInput;
 
     [Header("LobbyPanel")]
     public GameObject LobbyPanel;
@@ -284,7 +284,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Right.interactable = true;
         }
         already = true;
-        PhotonNetwork.LocalPlayer.NickName = NickNameInput.text;
+        PhotonNetwork.LocalPlayer.NickName = NicknameInput.text;
         CurrentNick.text = PhotonNetwork.LocalPlayer.NickName;
         myList.Clear();
     }
