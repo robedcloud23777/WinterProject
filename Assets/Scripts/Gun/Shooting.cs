@@ -65,7 +65,7 @@ public class Shooting : MonoBehaviour
                 // 데미지 로직 추가 가능
                 launchable.bullet--;
             }
-            else if (hitLayerName == "map")
+            else if (hitLayerName == "Map")
             {
                 // 총알 자국 효과 생성
                 bulletMark.MakeMark(hit);

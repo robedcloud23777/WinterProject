@@ -9118,7 +9118,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sparkVFX: {fileID: 0}
-  markVFX: {fileID: 0}
+  markVFX: {fileID: 8214054846265365185, guid: 72558b6a865a5074ba75be3e766eeeb5, type: 3}
 --- !u!1 &5133459978500823120
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,5 +15,6 @@ public class BulletMark : MonoBehaviour
     public void MakeMark(RaycastHit hit) 
     {
         Instantiate(markVFX, hit.point, Quaternion.LookRotation(hit.normal));
+        Debug.Log("발사 파티클 온");
     }
 }
