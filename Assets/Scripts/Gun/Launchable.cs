@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Launchable : MonoBehaviour
 {
-    public int Bullet = 30;
+    public int bullet = 25;
 
     public bool IsShoot()
     {
-        if (Bullet > 0)
+        if (bullet > 0)
         {
             return true;
         }
@@ -19,9 +19,9 @@ public class Launchable : MonoBehaviour
         }
     }
 
-    private IEnumerator Reload()
+    public IEnumerator Reload()
     {
         yield return new WaitForSeconds(3f);
-        Bullet = 30;
+        bullet = 25;
     }
 }
