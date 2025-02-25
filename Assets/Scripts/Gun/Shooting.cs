@@ -68,7 +68,7 @@ public class Shooting : MonoBehaviour
             else if (hitLayerName == "map")
             {
                 // 총알 자국 효과 생성
-                //bulletMark.MakeMark(hit.point, hit.normal);
+                bulletMark.MakeMark(hit);
                 launchable.bullet--;
             }
         }

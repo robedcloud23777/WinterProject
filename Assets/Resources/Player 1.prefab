@@ -9030,6 +9030,7 @@ GameObject:
   - component: {fileID: 6366012479604845305}
   - component: {fileID: 7167050693416840745}
   - component: {fileID: 7328066490885240489}
+  - component: {fileID: 5528423552861910582}
   m_Layer: 0
   m_Name: Player 1
   m_TagString: Yui
@@ -9205,6 +9206,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bullet: 25
+--- !u!114 &5528423552861910582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5131199151025040992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b41e492b35aeff4c868a0c222781755, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sparkVFX: {fileID: 0}
+  markVFX: {fileID: 0}
 --- !u!1 &5181050157495853216
 GameObject:
   m_ObjectHideFlags: 0

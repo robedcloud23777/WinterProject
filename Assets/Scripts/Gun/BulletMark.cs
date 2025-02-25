@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class BulletMark : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private GameObject sparkVFX;
+    [SerializeField] private GameObject markVFX;
+
+    public void Spark(Transform firePoint)
     {
-        
+        Instantiate(sparkVFX, firePoint.position, firePoint.rotation);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void MakeMark(RaycastHit hit) 
     {
-        
+        Instantiate(markVFX, hit.point, Quaternion.LookRotation(hit.normal));
     }
 }
