@@ -12,11 +12,7 @@ public class Launchable : MonoBehaviour
         {
             return true;
         }
-        else
-        {
-            StartCoroutine(Reload());
-            return false;
-        }
+        else return false;
     }
 
     public IEnumerator Reload()

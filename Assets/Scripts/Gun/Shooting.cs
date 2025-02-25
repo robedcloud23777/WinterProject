@@ -32,8 +32,7 @@ public class Shooting : MonoBehaviour
             recoilRadius = 0.1f; // 반동 초기화
         }
 
-        if (playerInput.GetRInput() && launchable.bullet != 25)
-            launchable.Reload();
+        if (playerInput.GetRInput() && launchable.bullet != 25) StartCoroutine(launchable.Reload());
     }
 
     private void FireRaycast()
