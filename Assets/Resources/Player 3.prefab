@@ -9091,7 +9091,7 @@ MonoBehaviour:
   recoilIncrease: 0.005
   playerInput: {fileID: 2773640192089426793}
   launchable: {fileID: 119033594673916747}
-  bulletMark: {fileID: 0}
+  bulletMark: {fileID: 7556868583183398135}
 --- !u!114 &119033594673916747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9117,7 +9117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b41e492b35aeff4c868a0c222781755, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sparkVFX: {fileID: 0}
+  sparkVFX: {fileID: 1336949550903370, guid: 4543ab5e3d405ec40a8d4e9aa5165030, type: 3}
   markVFX: {fileID: 8214054846265365185, guid: 72558b6a865a5074ba75be3e766eeeb5, type: 3}
 --- !u!1 &5133459978500823120
 GameObject:

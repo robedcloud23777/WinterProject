@@ -9,12 +9,13 @@ public class BulletMark : MonoBehaviour
 
     public void Spark(Transform firePoint)
     {
-        Instantiate(sparkVFX, firePoint.position, firePoint.rotation);
+        GameObject muzzleFlash = Instantiate(sparkVFX, firePoint.position, firePoint.rotation * Quaternion.Euler(0, -90, -90));
+        Destroy(muzzleFlash, 1.0f);
     }
 
     public void MakeMark(RaycastHit hit) 
     {
-        Instantiate(markVFX, hit.point, Quaternion.LookRotation(hit.normal));
-        Debug.Log("발사 파티클 온");
+        GameObject muzzleFlash = Instantiate(markVFX, hit.point, Quaternion.LookRotation(hit.normal));
+        Destroy(muzzleFlash, 1.0f);
     }
 }

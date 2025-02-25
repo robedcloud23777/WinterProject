@@ -51,7 +51,7 @@ public class Shooting : MonoBehaviour
         RaycastHit hit;
 
         // 총구에서 스파크 VFX 생성
-        //Instantiate(bulletMark.sparkVFX, firePoint.position, firePoint.rotation);
+        bulletMark.Spark(firePoint);
 
         if (Physics.Raycast(ray, out hit))
         {
