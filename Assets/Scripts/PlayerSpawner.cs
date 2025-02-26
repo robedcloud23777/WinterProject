@@ -19,7 +19,7 @@ public class ScenePlayerSpawner : MonoBehaviour
     {
         if (scene.name == "Main")
         {
-            GameManager.Instance.SpawnPlayer(spawner[0].transform.position);
+            GameManager.Instance.SpawnPlayer(spawner[GameManager.Instance.spawnIndex].transform.position);
         }
     }
 }

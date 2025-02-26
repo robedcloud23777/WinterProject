@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject settingPanelPrefab; // 설정 패널 프리팹
     public GameObject settingPanelInstance; // 생성된 패널 인스턴스
     private string[] characters = { "Player 1", "Player 2", "Player 3" };
+    public int spawnIndex;
 
     public float time = 600f;
     public bool timerIsRunning = false;
@@ -34,6 +35,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         // 설정 패널 프리팹을 생성
         CreateSettingPanel();
+        spawnIndex = Random.Range(0, 1);
     }
 
     private void Update()
