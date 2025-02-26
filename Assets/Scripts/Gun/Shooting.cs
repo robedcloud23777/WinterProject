@@ -1,7 +1,8 @@
+using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 
-public class Shooting : MonoBehaviour
+public class Shooting : MonoBehaviourPun
 {
     public Camera mainCamera;
     public Transform firePoint; // 총구 위치
@@ -18,6 +19,7 @@ public class Shooting : MonoBehaviour
 
     void Update()
     {
+        if (!photonView.IsMine) return;
         if (playerInput.GetShootInput() && !isDelay && launchable.IsShoot() == true)
         {
             isDelay = true;
@@ -62,14 +64,16 @@ public class Shooting : MonoBehaviour
 
             if (hitLayerName == "Player")
             {
-                // 데미지 로직 추가 가능
-                launchable.bullet--;
+                PhotonView targetPhotonView = hit.collider.GetComponent<PhotonView>();
+                if (targetPhotonView.IsMine == false)
+                {
+                    targetPhotonView.RPC("GetDamage", RpcTarget.All, 10);
+                }
             }
             else if (hitLayerName == "Map")
             {
                 // 총알 자국 효과 생성
                 bulletMark.MakeMark(hit);
-                launchable.bullet--;
             }
         }
         else

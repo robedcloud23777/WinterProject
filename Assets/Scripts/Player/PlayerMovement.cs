@@ -25,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
         controller.Move(_moveDirection * Time.deltaTime);
     }
 
-    private bool isGround()
+    public bool isGround()
     {
         return Physics.Raycast(groundCheck.position, Vector3.down, groundDistance);
     }

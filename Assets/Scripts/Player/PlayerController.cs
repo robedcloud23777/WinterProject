@@ -12,10 +12,10 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField] private PlayerAnimation playerAnimation;
     [SerializeField] private PlayerUi playerUi;
     [SerializeField] private LayerMask obstacleLayer;
-    [SerializeField] private int hp = 131;
+    [SerializeField] private int hp = 150;
     private bool isMove;
-    private bool isRun;
-    private bool isCrouch;
+    public bool isRun;
+    public bool isCrouch;
     private bool isZoom;
     private bool isShoot;
     private bool isSpeedBoost;
@@ -150,7 +150,7 @@ public class PlayerController : MonoBehaviourPun
             playerUi.Y_ESkill(EAmmo[1]);
             EAmmo[1]--;
         }
-        else if (playerNum == 2 && EAmmo[2] > 0)
+        else if (playerNum == 2 && EAmmo[2] > 0 && !playerMovement.isGround())
         {
             playerMovement.SuperJump();
             playerUi.I_ESkill(EAmmo[2]);
@@ -182,5 +182,24 @@ public class PlayerController : MonoBehaviourPun
         }
 
         isSpeedBoost = false;
+    }
+
+    [PunRPC]
+    public void GetDamage(int damage)
+    {
+        hp -= damage;
+
+        if (hp <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        if (photonView.IsMine)
+        {
+            PhotonNetwork.Destroy(gameObject);
+        }
     }
 }
