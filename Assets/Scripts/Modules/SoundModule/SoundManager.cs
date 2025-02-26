@@ -29,14 +29,14 @@ public class SoundManager : SingletonPun<SoundManager>
         activeSounds = new();
         activeSounds.Clear();
         LoadAllSoundsFromResources();
-        channelPrefab = Resources.Load("Prefab/AudioChannel") as GameObject;
+        channelPrefab = Resources.Load("Prefabs/SoundChannel") as GameObject;
         bgmSource = transform.AddComponent<AudioSource>();
         pv = GetComponent<PhotonView>();
     }
 
     private void Start()
     {
-        PlaySound(null, "StartBGM", 1, int.MaxValue);
+/*        PlaySound(null, "StartBGM", 1, int.MaxValue);*/
     }
 
     private void Update()
@@ -51,7 +51,7 @@ public class SoundManager : SingletonPun<SoundManager>
         bgmClips = new Dictionary<string, AudioClip>();
 
         // Resources/Audio ���� ���� ��� AudioClip�� �ҷ���
-        AudioClip[] clips = Resources.LoadAll<AudioClip>("Audio");
+        AudioClip[] clips = Resources.LoadAll<AudioClip>("Sounds");
 
         foreach (var clip in clips)
         {
@@ -128,8 +128,9 @@ public class SoundManager : SingletonPun<SoundManager>
     {
         if (soundEffects.TryGetValue(sfxName, out AudioClip clip))
         {
-            var channel = GetAvaliableChannel(soundObject);
+            var channel = GetAvaliableChannel();
             // ���ο� AudioSource�� �����Ͽ� ȿ���� ���
+            channel.transform.SetParent(soundObject.transform, false);
             channel.clip = clip;
             channel.volume = volume * SFXVolume * MasterVolume;
             channel.loop = false;
@@ -143,7 +144,7 @@ public class SoundManager : SingletonPun<SoundManager>
         }
     }
 
-    private AudioSource GetAvaliableChannel(GameObject obj)
+    private AudioSource GetAvaliableChannel()
     {
         /*        AudioSource[] list = obj.GetComponents<AudioSource>();
                 foreach (var i in list)
@@ -152,10 +153,10 @@ public class SoundManager : SingletonPun<SoundManager>
                 }
                 return obj.AddComponent<AudioSource>();*/
         AudioSource channel;
-        for (int i = 0; i < obj.transform.childCount; i++)
+        for (int i = 0; i < transform.childCount; i++)
         {
-            channel = obj.transform.GetChild(i).GetComponent<AudioSource>();
-            if (channel && channel.gameObject.activeSelf)
+            channel = transform.GetChild(i).GetComponent<AudioSource>();
+            if (channel && !channel.gameObject.activeSelf)
             {
                 channel.gameObject.SetActive(true);
                 channel.transform.localPosition = Vector3.zero;
@@ -164,7 +165,7 @@ public class SoundManager : SingletonPun<SoundManager>
         }
 
         channel = Instantiate(channelPrefab).GetComponent<AudioSource>();
-        channel.transform.parent = obj.transform;
+        channel.transform.parent = transform;
         channel.transform.localPosition = Vector3.zero;
         channel.gameObject.SetActive(true);
         return channel;

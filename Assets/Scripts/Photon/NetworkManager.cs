@@ -70,10 +70,21 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             BackGround[i].DOFade(1f, 1f).SetEase(Ease.InOutQuad);
     }
 
+    public void PlayClick1Sound()
+    {
+        SoundManager.Instance.PlaySound(gameObject, "UiClick1", 1, 1);
+    }
+    public void PlayClick2Sound()
+    {
+        SoundManager.Instance.PlaySound(gameObject, "UiClick2", 1, 1);
+    }
+
     public void Play()
     {
         StartPanel.SetActive(false);
         NicknamePanel.SetActive(true);
+
+        PlayClick1Sound();
     }
 
     public void OpenTutorial()
@@ -85,11 +96,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             if (i == curPage) Pages[i].SetActive(true);
             else Pages[i].SetActive(false);
         }
+
+        PlayClick1Sound();
     }
 
     public void CloseTutorial()
     {
         TutorialPanel.SetActive(false);
+
+        PlayClick1Sound();
     }
 
     public void Previous()
@@ -100,6 +115,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             if (i == curPage) Pages[i].SetActive(true);
             else Pages[i].SetActive(false);
         }
+
+        PlayClick1Sound();
     }
 
     public void Next()
@@ -110,7 +127,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             if (i == curPage) Pages[i].SetActive(true);
             else Pages[i].SetActive(false);
         }
+
+        PlayClick1Sound();
     }
+
 
     public void Exit()
     {
@@ -147,6 +167,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             UsersPanel.SetActive(false);
             PhotonNetwork.LeaveRoom();
         }
+
+        PlayClick1Sound();
     }
 
     public void LeftCharacter()
@@ -166,6 +188,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 Characters[i].SetActive(false);
             }
         }
+
+        PlayClick1Sound();
     }
 
     public void RightCharacter()
@@ -185,6 +209,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 Characters[i].SetActive(false);
             }
         }
+        PlayClick1Sound();
     }
 
     public void SelectCharacter()
@@ -200,6 +225,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Left.interactable = true;
             Right.interactable = true;
         }
+        PlayClick2Sound();
+
     }
 
     public void EnterCharacterPanel()
@@ -207,17 +234,22 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         LobbyPanel.SetActive(false);
         CharacterPanel.SetActive(true);
         Characters[curInfo].SetActive(true);
+
+        PlayClick1Sound();
     }
     public void EnterCreateRoomPanel()
     {
         LobbyPanel.SetActive(false);
         CreateRoomPanel.SetActive(true);
+
+        PlayClick1Sound();
     }
     public void EnterFindRoomPanel()
     {
         LobbyPanel.SetActive(false);
         FindRoomPanel.SetActive(true);
 
+        PlayClick1Sound();
     }
 
     #region 방리스트 갱신
@@ -225,7 +257,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         if (num == -2) --currentPage;
         else if (num == -1) ++currentPage;
-        else PhotonNetwork.JoinRoom(myList[multiple + num].Name);
+        else {
+            PhotonNetwork.JoinRoom(myList[multiple + num].Name);
+            PlayClick2Sound();
+        }
+
         MyListRenewal();
     }
 
@@ -268,7 +304,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         StatusText.text = PhotonNetwork.NetworkClientState.ToString();
     }
 
-    public void Connect() => PhotonNetwork.ConnectUsingSettings();
+    public void Connect()
+    {
+        PhotonNetwork.ConnectUsingSettings();
+        PlayClick2Sound();
+    }
 
     public override void OnConnectedToMaster() => PhotonNetwork.JoinLobby();
 
@@ -303,7 +343,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region 방
-    public void CreateRoom() => PhotonNetwork.CreateRoom(RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text, new RoomOptions { MaxPlayers = 2 });
+    public void CreateRoom()
+    {
+        PhotonNetwork.CreateRoom(RoomInput.text == "" ? "Room" + Random.Range(0, 100) : RoomInput.text, new RoomOptions { MaxPlayers = 2 });
+        PlayClick2Sound();
+    }
+        
 
     public void JoinRandomRoom() => PhotonNetwork.JoinRandomRoom();
 
