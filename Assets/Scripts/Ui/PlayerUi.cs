@@ -59,9 +59,24 @@ public class PlayerUi : MonoBehaviour
 
     }
 
-    public void InitSkillUi()
+    public void InitSkillUi(int[] q, int[] e)
     {
         skillUi[GameManager.Instance.myCharacter].SetActive(true);
+        if(GameManager.Instance.myCharacter == 0)
+        {
+            for (int i = 0; i < q[0]; i++) SkillInit(t_QAmmo[i]);
+            for (int i = 0; i < e[0]; i++) SkillInit(t_EAmmo[i]);
+        }
+        else if (GameManager.Instance.myCharacter == 1)
+        {
+            for (int i = 0; i < q[1]; i++) SkillInit(y_QAmmo[i]);
+            for (int i = 0; i < e[1]; i++) SkillInit(y_EAmmo[i]);
+        }
+        else if (GameManager.Instance.myCharacter == 2)
+        {
+            for (int i = 0; i < q[2]; i++) SkillInit(i_QAmmo[i]);
+            for (int i = 0; i < e[2]; i++) SkillInit(i_EAmmo[i]);
+        }
     }
 
     public void InitNickname(string playerName)
@@ -102,6 +117,13 @@ public class PlayerUi : MonoBehaviour
         ammoImage.color = color;
     }
 
+    private void SkillInit(Image ammoImage)
+    {
+        Color color = ammoImage.color;
+        color.a = 1f;
+        ammoImage.color = color;
+    }
+
     public void CantUse()
     {
         Sequence fadeSequence = DOTween.Sequence();
@@ -127,6 +149,16 @@ public class PlayerUi : MonoBehaviour
         Color color = hpBar.color;
         color.a = 0.3f;
         hpBar.color = color;
+    }
+
+    public void HpInit()
+    {
+        for (int i = 0; i < 15; i++)
+        {
+            Color color = hpBars[i].color;
+            color.a = 1f;
+            hpBars[i].color = color;
+        }
     }
 
     public void UpdateTimerDisplay(float time)

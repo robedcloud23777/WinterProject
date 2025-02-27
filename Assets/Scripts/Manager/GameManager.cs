@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public bool isDie = false;
     public bool isRevival = false;
-    private bool isEnd;
+    public bool isEnd;
 
     private void Awake()
     {

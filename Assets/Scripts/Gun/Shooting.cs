@@ -67,7 +67,7 @@ public class Shooting : MonoBehaviourPun
                 PhotonView targetPhotonView = hit.collider.GetComponent<PhotonView>();
                 if (targetPhotonView.IsMine == false)
                 {
-                    targetPhotonView.RPC("GetDamage", RpcTarget.All, 10);
+                    targetPhotonView.RPC("GetDamage", RpcTarget.All, 10, photonView.ViewID);
                 }
             }
             else if (hitLayerName == "Map")

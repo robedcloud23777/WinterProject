@@ -34,13 +34,14 @@ public class PlayerController : MonoBehaviourPun
         playerUi = GameObject.Find("Canvas").GetComponent<PlayerUi>();
         if (!photonView.IsMine) return;
         GameManager.Instance.CreateSettingPanel();
-        playerUi.InitSkillUi();
+        playerUi.InitSkillUi(QAmmo,EAmmo);
         playerUi.InitNickname(PhotonNetwork.LocalPlayer.NickName);
     }
 
     private void Update()
     {
         if (!photonView.IsMine) return;
+        if(kill >= 40) GameManager.Instance.isEnd = true;
         playerUi.UpdateHpDisplay(hp);
         playerUi.UpdateBulletDisplay(launchable.bullet);
         playerUi.UpdateKillDisplay(kill);
@@ -200,24 +201,48 @@ public class PlayerController : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void GetDamage(int damage)
+    public void GetDamage(int damage, int attackerId)
     {
         hp -= damage;
 
         if (hp <= 0)
         {
-            Die();
+            Die(attackerId);
         }
     }
 
-    private void Die()
+    [PunRPC]
+
+    public void KillCount()
+    {
+        if (hp <= 0)
+        {
+            if (photonView.IsMine)
+            {
+                kill++;
+            }
+        }
+    }
+
+    private void Die(int attackerId)
     {
         if (photonView.IsMine)
         {
+            Photon.Realtime.Player attacker = PhotonNetwork.CurrentRoom.GetPlayer(attackerId);
+            PhotonView attackerPhotonView = PhotonView.Find(attackerId);
+            attackerPhotonView.RPC("IncreaseKill", RpcTarget.All);
             GameManager.Instance.isDie = true;
             photonView.RPC("DisablePlayer", RpcTarget.All);
             playerUiObject.SetActive(false);
+            Init();
+            death++;
         }
+    }
+
+    [PunRPC]
+    public void IncreaseKill()
+    {
+        kill++;
     }
 
     [PunRPC]
@@ -229,9 +254,12 @@ public class PlayerController : MonoBehaviourPun
     private void Revival()
     {
         Init();
+        playerUi.InitSkillUi(QAmmo, EAmmo);
+        playerUi.HpInit();
         int randomPos = Random.Range(0, 5);
         transform.position = playerSpawner.spawner[randomPos].transform.position;
         photonView.RPC("EnablePlayer", RpcTarget.All);
+        playerUiObject.SetActive(true);
         GameManager.Instance.isRevival = false;
     }
 
