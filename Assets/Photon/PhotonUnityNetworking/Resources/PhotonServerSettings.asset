@@ -46,6 +46,8 @@ MonoBehaviour:
   - Teleport
   - RPCPlaySound
   - GetDamage
+  - DisablePlayer
+  - EnablePlayer
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

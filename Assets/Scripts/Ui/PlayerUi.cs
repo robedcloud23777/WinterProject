@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using System.Text.RegularExpressions;
+using Photon.Pun.UtilityScripts;
 
 public class PlayerUi : MonoBehaviour
 {
@@ -21,11 +22,17 @@ public class PlayerUi : MonoBehaviour
 
     public Image[] hpBars;
 
+    public TMP_Text hp;
     public TMP_Text timer;
+    public TMP_Text bullet;
+    public TMP_Text kill;
+    public TMP_Text death;
 
     public GameObject countdownUi;
     public TMP_Text countdownText;
     public bool isCountdown = false;
+
+    private float deathTime;
 
     private void Start()
     {
@@ -35,6 +42,21 @@ public class PlayerUi : MonoBehaviour
     private void Update()
     {
         UpdateTimerDisplay(GameManager.Instance.time);
+        if (GameManager.Instance.isDie) DieCountdown();
+        if (isCountdown)
+        {
+            deathTime -= Time.deltaTime;
+            int displayTime = (int)deathTime + 1;
+            countdownText.text = displayTime.ToString();
+            if (deathTime <= 0f)
+            {
+                countdownUi.SetActive(false);
+                isCountdown = false;
+                GameManager.Instance.isDie = false;
+                GameManager.Instance.isRevival = true;
+            }
+        }
+
     }
 
     public void InitSkillUi()
@@ -89,9 +111,12 @@ public class PlayerUi : MonoBehaviour
         fadeSequence.Play();
     }
 
-    public void UpdateHpDisplay(int hp)
+    public void UpdateHpDisplay(int h)
     {
-        for (int i = 15; i > hp / 10; i--)
+        if(GameManager.Instance.isDie) return;
+        if(h <= 0) return;
+        hp.text = h + "";
+        for (int i = 15; i > h / 10; i--)
         {
             HpLost(hpBars[i-1]);
         }
@@ -106,10 +131,25 @@ public class PlayerUi : MonoBehaviour
 
     public void UpdateTimerDisplay(float time)
     {
-   
-            int minutes = Mathf.FloorToInt(time / 60);
-            int seconds = Mathf.FloorToInt(time % 60);
-            timer.text = minutes + " : " + seconds;
+        int minutes = Mathf.FloorToInt(time / 60);
+        int seconds = Mathf.FloorToInt(time % 60);
+        timer.text = minutes + " : " + seconds;
+    }
+
+    public void UpdateBulletDisplay(int b)
+    {
+        if (GameManager.Instance.isDie) return;
+        bullet.text = b + " / ∞";
+    }
+
+    public void UpdateKillDisplay(int k)
+    {
+        kill.text = "Kill " + k;
+    }
+
+    public void UpdateDeathDisplay(int d)
+    {
+        death.text = "Kill " + d;
     }
 
     public IEnumerator StartCountdown()
@@ -125,5 +165,15 @@ public class PlayerUi : MonoBehaviour
 
         isCountdown = false;
         GameManager.Instance.timerIsRunning = true;
+    }
+
+    private void DieCountdown()
+    {
+        if (!isCountdown)
+        {
+            countdownUi.SetActive(true);
+            isCountdown = true;
+            deathTime = 3f; // 카운트다운을 3초로 리셋
+        }
     }
 }

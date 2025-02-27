@@ -3153,12 +3153,12 @@ Transform:
   m_GameObject: {fileID: 1687481576757626273}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.7, z: 0}
+  m_LocalPosition: {x: 0, y: 0.9000001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3534137768168062741}
-  m_Father: {fileID: 9005091607350883916}
+  m_Father: {fileID: 6388080973282261454}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2407102548520123395
 MonoBehaviour:
@@ -8332,6 +8332,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1780592151359428383}
+  - {fileID: 6181948726116785726}
   - {fileID: 3804426917017568785}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -8373,16 +8374,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76d7051dc73780c4794e533a31d5a1bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraController: {fileID: 2407102548520123395}
   playerInput: {fileID: 2773640192089426793}
   playerMovement: {fileID: 689499046621065862}
   playerBody: {fileID: 1440658802223402405}
   playerAnimation: {fileID: 5925426011107834346}
   playerUi: {fileID: 0}
+  launchable: {fileID: 2677163309020676548}
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 64
   hp: 150
+  isRun: 0
+  isCrouch: 0
 --- !u!114 &2773640192089426793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10542,7 +10545,6 @@ Transform:
   - {fileID: 8658241625637292686}
   - {fileID: 212740676966557214}
   - {fileID: 7213701975139949671}
-  - {fileID: 6181948726116785726}
   m_Father: {fileID: 1780592151359428383}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2024218143789575651

@@ -20,7 +20,7 @@ public class Shooting : MonoBehaviourPun
     void Update()
     {
         if (!photonView.IsMine) return;
-        if (playerInput.GetShootInput() && !isDelay && launchable.IsShoot() == true)
+        if (!GameManager.Instance.isDie && playerInput.GetShootInput() && !isDelay && launchable.IsShoot() == true)
         {
             isDelay = true;
             FireRaycast();

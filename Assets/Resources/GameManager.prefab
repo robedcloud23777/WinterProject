@@ -44,5 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b020b7d25bf2bb14bb49e9b580229b5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnPoint: {x: 0, y: 0, z: 0}
+  myCharacter: 0
   settingPanelPrefab: {fileID: 2189023694951303286, guid: 5b952800ad997784aa48d09ca4018aaa, type: 3}
+  settingPanelInstance: {fileID: 0}
+  time: 600
+  timerIsRunning: 0
+  isDie: 0
+  isRevival: 0

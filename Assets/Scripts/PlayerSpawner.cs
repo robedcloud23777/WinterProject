@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ScenePlayerSpawner : MonoBehaviour
+public class PlayerSpawner : MonoBehaviour
 {
     public GameObject[] spawner;
 
@@ -19,7 +19,8 @@ public class ScenePlayerSpawner : MonoBehaviour
     {
         if (scene.name == "Main")
         {
-            GameManager.Instance.SpawnPlayer(spawner[GameManager.Instance.spawnIndex].transform.position);
+            int randomPos = Random.Range(0, 5);
+            GameManager.Instance.SpawnPlayer(spawner[randomPos].transform.position);
         }
     }
 }

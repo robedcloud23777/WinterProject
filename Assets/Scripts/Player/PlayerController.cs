@@ -11,6 +11,9 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField] private GameObject playerBody;
     [SerializeField] private PlayerAnimation playerAnimation;
     [SerializeField] private PlayerUi playerUi;
+    [SerializeField] private GameObject playerUiObject;
+    [SerializeField] private PlayerSpawner playerSpawner;
+    [SerializeField] private Launchable launchable;
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private int hp = 150;
     private bool isMove;
@@ -21,9 +24,13 @@ public class PlayerController : MonoBehaviourPun
     private bool isSpeedBoost;
     private int[] QAmmo = { 2, 0, 0 };
     private int[] EAmmo = { 1, 2, 1 };
+    private int kill = 0;
+    private int death = 0;
 
     private void Start()
     {
+        playerUiObject = GameObject.Find("PlayerUi");
+        playerSpawner = GameObject.Find("PlayerSpawner").GetComponent<PlayerSpawner>();
         playerUi = GameObject.Find("Canvas").GetComponent<PlayerUi>();
         if (!photonView.IsMine) return;
         GameManager.Instance.CreateSettingPanel();
@@ -35,6 +42,9 @@ public class PlayerController : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
         playerUi.UpdateHpDisplay(hp);
+        playerUi.UpdateBulletDisplay(launchable.bullet);
+        playerUi.UpdateKillDisplay(kill);
+        playerUi.UpdateDeathDisplay(death);
         playerBody.transform.localPosition = new Vector3(0, -0.8f, 0); // 애니메이션할 때 튀어나가서 고정
         isRun = playerInput.GetRunInput();
         isCrouch = playerInput.GetCrouchInput();
@@ -57,11 +67,14 @@ public class PlayerController : MonoBehaviourPun
         playerMovement.ImplementGravity();
 
         CurrnetAnimation();
+
+        if(GameManager.Instance.isRevival) Revival();
     }
 
     private void CurrnetAnimation()
     {
         if (GameManager.Instance.settingPanelInstance.activeSelf) return;
+        if (GameManager.Instance.isDie) return;
 
         isMove = Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0;
         if (isMove)
@@ -110,6 +123,7 @@ public class PlayerController : MonoBehaviourPun
 
     private void QSkill(int playerNum)
     {
+        if (GameManager.Instance.isDie) return;
         if (playerNum == 0 && !isSpeedBoost && QAmmo[0] > 0)
         {
             StartCoroutine(SpeedBoostCoroutine(10f, 1.5f));
@@ -129,6 +143,7 @@ public class PlayerController : MonoBehaviourPun
 
     private void ESkill(int playerNum)
     {
+        if (GameManager.Instance.isDie) return;
         if (playerNum == 0 && EAmmo[0] > 0)
         {
             playerMovement.controller.enabled = false;
@@ -150,7 +165,7 @@ public class PlayerController : MonoBehaviourPun
             playerUi.Y_ESkill(EAmmo[1]);
             EAmmo[1]--;
         }
-        else if (playerNum == 2 && EAmmo[2] > 0 && !playerMovement.isGround())
+        else if (playerNum == 2 && EAmmo[2] > 0 && playerMovement.isGround())
         {
             playerMovement.SuperJump();
             playerUi.I_ESkill(EAmmo[2]);
@@ -195,11 +210,41 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    void Die()
+    private void Die()
     {
         if (photonView.IsMine)
         {
-            PhotonNetwork.Destroy(gameObject);
+            GameManager.Instance.isDie = true;
+            photonView.RPC("DisablePlayer", RpcTarget.All);
+            playerUiObject.SetActive(false);
         }
+    }
+
+    [PunRPC]
+    void DisablePlayer()
+    {
+        playerBody.SetActive(false);
+    }
+
+    private void Revival()
+    {
+        Init();
+        int randomPos = Random.Range(0, 5);
+        transform.position = playerSpawner.spawner[randomPos].transform.position;
+        photonView.RPC("EnablePlayer", RpcTarget.All);
+        GameManager.Instance.isRevival = false;
+    }
+
+    [PunRPC]
+    void EnablePlayer()
+    {
+        playerBody.SetActive(true);
+    }
+
+    private void Init()
+    {
+        hp = 150;
+        QAmmo = new int[] { 2, 0, 0 };
+        EAmmo = new int[] { 1, 2, 1 };
     }
 }

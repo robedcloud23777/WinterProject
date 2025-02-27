@@ -314,6 +314,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
+        StartPanel.SetActive(false);
         NicknamePanel.SetActive(false);
         LobbyPanel.SetActive(true);
         if (!already)

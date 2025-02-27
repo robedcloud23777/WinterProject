@@ -14,10 +14,13 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject settingPanelPrefab; // 설정 패널 프리팹
     public GameObject settingPanelInstance; // 생성된 패널 인스턴스
     private string[] characters = { "Player 1", "Player 2", "Player 3" };
-    public int spawnIndex;
 
     public float time = 600f;
     public bool timerIsRunning = false;
+
+    public bool isDie = false;
+    public bool isRevival = false;
+    private bool isEnd;
 
     private void Awake()
     {
@@ -35,7 +38,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         // 설정 패널 프리팹을 생성
         CreateSettingPanel();
-        spawnIndex = Random.Range(0, 1);
     }
 
     private void Update()
@@ -49,6 +51,24 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             time -= Time.deltaTime;
         }
+        if (time < 0f)
+        {
+            isEnd = true;
+            time = 600f;
+            timerIsRunning = false;
+        }
+        if (isEnd)
+        {
+            PhotonNetwork.LeaveRoom();
+            isEnd = false;
+        }
+    }
+
+    public override void OnLeftRoom()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        SceneManager.LoadScene("Start");
     }
 
     public void SpawnPlayer(Vector3 spawnPoint)
