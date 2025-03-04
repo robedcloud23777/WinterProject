@@ -17,7 +17,7 @@ public class Launchable : MonoBehaviour
 
     public IEnumerator Reload()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2.5f);
         bullet = 25;
     }
 }

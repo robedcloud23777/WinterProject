@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using TMPro;
+using ExitGames.Client.Photon.StructWrapping;
 
 public class PlayerController : MonoBehaviourPun
 {
@@ -11,6 +12,7 @@ public class PlayerController : MonoBehaviourPun
     [SerializeField] private GameObject playerBody;
     [SerializeField] private PlayerAnimation playerAnimation;
     [SerializeField] private PlayerUi playerUi;
+    [SerializeField] private Shooting shooting;
     [SerializeField] private GameObject playerUiObject;
     [SerializeField] private PlayerSpawner playerSpawner;
     [SerializeField] private Launchable launchable;
@@ -22,10 +24,12 @@ public class PlayerController : MonoBehaviourPun
     private bool isZoom;
     private bool isShoot;
     private bool isSpeedBoost;
+    private bool isDamageBuff;
     private int[] QAmmo = { 2, 0, 0 };
     private int[] EAmmo = { 1, 2, 1 };
     private int kill = 0;
     private int death = 0;
+    private string otherName;
 
     private void Start()
     {
@@ -40,8 +44,26 @@ public class PlayerController : MonoBehaviourPun
 
     private void Update()
     {
-        if (!photonView.IsMine) return;
-        if(kill >= 40) GameManager.Instance.isEnd = true;
+        if (!photonView.IsMine)
+        {
+            otherName = PhotonNetwork.LocalPlayer.NickName;
+            return;
+        }
+        if (GameManager.Instance.isEnd)
+        {
+            playerUi.Draw();
+            playerUi.Info(PhotonNetwork.LocalPlayer.NickName, kill + " / " + death, otherName, death + " / " + kill);
+        }
+        if (kill >= 3)
+        {
+            playerUi.Victory();
+            playerUi.Info(PhotonNetwork.LocalPlayer.NickName, kill + " / " + death, otherName, death + " / " + kill);
+        }
+        if (death >= 3)
+        {
+            playerUi.Defeat();
+            playerUi.Info(PhotonNetwork.LocalPlayer.NickName, kill + " / " + death, otherName, death + " / " + kill);
+        }
         playerUi.UpdateHpDisplay(hp);
         playerUi.UpdateBulletDisplay(launchable.bullet);
         playerUi.UpdateKillDisplay(kill);
@@ -160,9 +182,9 @@ public class PlayerController : MonoBehaviourPun
             playerUi.T_ESkill(EAmmo[0]);
             EAmmo[0]--;
         }
-        else if (playerNum == 1 && EAmmo[1] > 0)
+        else if (playerNum == 1 && EAmmo[1] > 0 && !isDamageBuff)
         {
-            //데미지 2배
+            StartCoroutine(DamageBuff());
             playerUi.Y_ESkill(EAmmo[1]);
             EAmmo[1]--;
         }
@@ -198,6 +220,15 @@ public class PlayerController : MonoBehaviourPun
         }
 
         isSpeedBoost = false;
+    }
+
+    IEnumerator DamageBuff()
+    {
+        shooting.damage *= 2;
+        isDamageBuff = true;
+        yield return new WaitForSeconds(5f);
+        shooting.damage = 10;
+        isDamageBuff = false;
     }
 
     [PunRPC]
@@ -271,6 +302,7 @@ public class PlayerController : MonoBehaviourPun
 
     private void Init()
     {
+        launchable.bullet = 25;
         hp = 150;
         QAmmo = new int[] { 2, 0, 0 };
         EAmmo = new int[] { 1, 2, 1 };

@@ -34,6 +34,17 @@ public class PlayerUi : MonoBehaviour
 
     private float deathTime;
 
+    public Image victoryPanel;
+    public Image defeatPanel;
+    public Image drawPanel;
+    public TMP_Text myName;
+    public TMP_Text myKD;
+    public TMP_Text otherName;
+    public TMP_Text otherKD;
+
+    public Image[] endPanel;
+    public TMP_Text[] endPanelText;
+
     private void Start()
     {
         StartCoroutine(StartCountdown());
@@ -207,5 +218,56 @@ public class PlayerUi : MonoBehaviour
             isCountdown = true;
             deathTime = 3f; // 카운트다운을 3초로 리셋
         }
+    }
+
+    public void Victory()
+    {
+        victoryPanel.DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+        for(int i = 0; i< endPanel.Length; i++)
+        {
+            endPanel[i].DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+        }
+        for(int i = 0;i< endPanelText.Length; i++)
+        {
+            endPanelText[i].DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+        }
+    }
+
+    public void Defeat()
+    {
+        defeatPanel.DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+        for (int i = 0; i < endPanel.Length; i++)
+        {
+            endPanel[i].DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+        }
+        for (int i = 0; i < endPanelText.Length; i++)
+        {
+            endPanelText[i].DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+        }
+    }
+
+    public void Draw()
+    {
+        drawPanel.DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+        for (int i = 0; i < endPanel.Length; i++)
+        {
+            endPanel[i].DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+        }
+        for (int i = 0; i < endPanelText.Length; i++)
+        {
+            endPanelText[i].DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+        }
+    }
+
+    public void Info(string name1, string kd1, string name2, string kd2)
+    {
+        myName.text = name1;
+        myKD.text = kd1;
+        otherName.text = name2;
+        otherKD.text = kd2;
+        myName.gameObject.SetActive(true);
+        myKD.gameObject.SetActive(true);
+        otherName.gameObject.SetActive(true);
+        otherKD.gameObject.SetActive(true);
     }
 }

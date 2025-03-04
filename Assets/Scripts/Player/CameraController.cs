@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviourPun
 {
+    [SerializeField] private PlayerController playerController;
     [SerializeField] private GameObject cameraObject;
     [SerializeField] private Transform playerBody;
     [SerializeField] private Transform playerHead;
@@ -28,6 +29,14 @@ public class CameraController : MonoBehaviourPun
             cameraObject.SetActive(false);
         }
     }
+
+    private void Update()
+    {
+        playerHead.localPosition = new Vector3(0, 0.6f, 0);
+        if (playerController.isRun) playerHead.localPosition += new Vector3(0, 0, 0.3f);
+        if (playerController.isCrouch) playerHead.localPosition += new Vector3(0, -0.3f, 0);
+    }
+
     private void LateUpdate()
     {
         if (!photonView.IsMine) return;
