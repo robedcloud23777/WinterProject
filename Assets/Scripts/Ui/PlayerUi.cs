@@ -45,6 +45,11 @@ public class PlayerUi : MonoBehaviour
     public Image[] endPanel;
     public TMP_Text[] endPanelText;
 
+    void Awake()
+    {
+        DOTween.SetTweensCapacity(1000, 50); // 첫 번째 값: 트윈 개수, 두 번째 값: 시퀀스 개수
+    }
+
     private void Start()
     {
         StartCoroutine(StartCountdown());
@@ -222,40 +227,40 @@ public class PlayerUi : MonoBehaviour
 
     public void Victory()
     {
-        victoryPanel.DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+        victoryPanel.DOFade(1f, 0.1f).SetEase(Ease.InOutQuad);
         for(int i = 0; i< endPanel.Length; i++)
         {
-            endPanel[i].DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+            endPanel[i].DOFade(1f, 0.1f).SetEase(Ease.InOutQuad);
         }
         for(int i = 0;i< endPanelText.Length; i++)
         {
-            endPanelText[i].DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+            endPanelText[i].DOFade(1f, 0.1f).SetEase(Ease.InOutQuad);
         }
     }
 
     public void Defeat()
     {
-        defeatPanel.DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+        defeatPanel.DOFade(1f, 0.1f).SetEase(Ease.InOutQuad);
         for (int i = 0; i < endPanel.Length; i++)
         {
-            endPanel[i].DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+            endPanel[i].DOFade(1f, 0.1f).SetEase(Ease.InOutQuad);
         }
         for (int i = 0; i < endPanelText.Length; i++)
         {
-            endPanelText[i].DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+            endPanelText[i].DOFade(1f, 0.1f).SetEase(Ease.InOutQuad);
         }
     }
 
     public void Draw()
     {
-        drawPanel.DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+        drawPanel.DOFade(1f, 0.1f).SetEase(Ease.InOutQuad);
         for (int i = 0; i < endPanel.Length; i++)
         {
-            endPanel[i].DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+            endPanel[i].DOFade(1f, 0.1f).SetEase(Ease.InOutQuad);
         }
         for (int i = 0; i < endPanelText.Length; i++)
         {
-            endPanelText[i].DOFade(1f, 1f).SetEase(Ease.InOutQuad);
+            endPanelText[i].DOFade(1f, 0.1f).SetEase(Ease.InOutQuad);
         }
     }
 

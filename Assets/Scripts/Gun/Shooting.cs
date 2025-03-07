@@ -34,10 +34,23 @@ public class Shooting : MonoBehaviourPun
     {
         lastShotTime = Time.time;
 
-        // 화면에서 마우스 위치를 기준으로 발사 방향을 구함
-        Ray screenRay = mainCamera.ScreenPointToRay(Input.mousePosition); // 마우스 위치
-        Vector3 shootDirection = screenRay.direction.normalized; // 반동 없이 그대로 적용
+        // 카메라의 중앙에서 마우스 위치를 기준으로 발사 방향을 구함
+        Ray screenRay = mainCamera.ScreenPointToRay(Input.mousePosition);
+        Vector3 targetPoint;
 
+        if (Physics.Raycast(screenRay, out RaycastHit hitInfo))
+        {
+            targetPoint = hitInfo.point; // 목표 지점 (충돌한 위치)
+        }
+        else
+        {
+            targetPoint = screenRay.origin + screenRay.direction * 100f; // 충돌이 없으면 먼 거리 설정
+        }
+
+        // firePoint에서 targetPoint까지의 방향을 다시 계산
+        Vector3 shootDirection = (targetPoint - firePoint.position).normalized;
+
+        // Ray 설정
         Ray ray = new Ray(firePoint.position, shootDirection);
         RaycastHit hit;
 
@@ -77,11 +90,12 @@ public class Shooting : MonoBehaviourPun
             launchable.bullet--;
         }
 
-        // 총알 경로를 2초 동안 표시
-        Invoke("DisableLineRenderer", 2f);
+        // 총알 경로를 1초 동안 표시
+        Invoke("DisableLineRenderer", 1f);
 
         Debug.DrawRay(ray.origin, shootDirection * 100f, Color.red, 2f);
     }
+
 
     private void DisableLineRenderer()
     {

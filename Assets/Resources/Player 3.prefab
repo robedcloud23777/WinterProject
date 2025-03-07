@@ -3714,7 +3714,7 @@ MonoBehaviour:
   playerBody: {fileID: 6388080973282261454}
   playerHead: {fileID: 6181948726116785726}
   cam: {fileID: 3534137768168062741}
-  cameraDistance: 5
+  cameraDistance: 3
   mouseSensitivity: 2
   collisionLayer:
     serializedVersion: 2

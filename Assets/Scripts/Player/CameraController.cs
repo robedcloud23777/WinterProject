@@ -17,7 +17,8 @@ public class CameraController : MonoBehaviourPun
     private float _currentRotationY = 0f;
     [SerializeField] private float minVerticalAngle = -45f;
     [SerializeField] private float maxVerticalAngle = 45f;
-    private bool isFPS = false;
+    private bool isTPS = false;
+    private bool isMove;
 
     private void Start()
     {
@@ -32,9 +33,18 @@ public class CameraController : MonoBehaviourPun
 
     private void Update()
     {
-        playerHead.localPosition = new Vector3(0, 0.6f, 0);
-        if (playerController.isRun) playerHead.localPosition += new Vector3(0, 0, 0.3f);
-        if (playerController.isCrouch) playerHead.localPosition += new Vector3(0, -0.3f, 0);
+        if (!photonView.IsMine) return;
+        isMove = Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0;
+        if (isTPS) playerHead.localPosition = new Vector3(0.3f, 1.0f, 0);
+        else playerHead.localPosition = new Vector3(0f, 0.6f, 0);
+
+        if (playerController.isRun && isMove) playerHead.localPosition += new Vector3(0, 0, 0.4f);
+        if (playerController.isCrouch)
+        {
+            if (isMove) playerHead.localPosition += new Vector3(0, -0.3f, 0.35f);
+            else playerHead.localPosition += new Vector3(0, -0.3f, 0.1f);
+        }
+        
     }
 
     private void LateUpdate()
@@ -45,14 +55,14 @@ public class CameraController : MonoBehaviourPun
         if (Input.GetKeyDown(KeyCode.V))
         {
             if (Cursor.lockState == CursorLockMode.None) return;
-            isFPS = !isFPS;
+            isTPS = !isTPS;
             cam.position = playerHead.position;
         }
-        if (isFPS) FPSmode();
-        else TPSmode();
+        if (isTPS) TPSmode();
+        else FPSmode();
     }
 
-    private void TPSmode()
+    private void FPSmode()
     {
         if (Cursor.lockState == CursorLockMode.None) return;
         _mouseInput.x = Input.GetAxis("Mouse X") * mouseSensitivity;
@@ -63,7 +73,7 @@ public class CameraController : MonoBehaviourPun
         cam.localRotation = Quaternion.Euler(_currentRotationY, 0, 0);
     }
 
-    private void FPSmode()
+    private void TPSmode()
     {
         if (Cursor.lockState == CursorLockMode.None) return;
         _mouseInput.x = Input.GetAxis("Mouse X") * mouseSensitivity;

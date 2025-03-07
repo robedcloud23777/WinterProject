@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviourPun
     {
         if (!photonView.IsMine)
         {
-            otherName = PhotonNetwork.LocalPlayer.NickName;
+            otherName = photonView.Owner.NickName;
             return;
         }
         if (GameManager.Instance.isEnd)
@@ -64,6 +64,7 @@ public class PlayerController : MonoBehaviourPun
             playerUi.Defeat();
             playerUi.Info(PhotonNetwork.LocalPlayer.NickName, kill + " / " + death, otherName, death + " / " + kill);
         }
+        CurrnetAnimation();
         playerUi.UpdateHpDisplay(hp);
         playerUi.UpdateBulletDisplay(launchable.bullet);
         playerUi.UpdateKillDisplay(kill);
@@ -88,8 +89,6 @@ public class PlayerController : MonoBehaviourPun
         playerMovement.MoveByInput(playerInput.GetMoveInput());
         if (playerInput.GetJumpInput()) playerMovement.JumpByInput();
         playerMovement.ImplementGravity();
-
-        CurrnetAnimation();
 
         if(GameManager.Instance.isRevival) Revival();
     }
