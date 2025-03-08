@@ -4,8 +4,9 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 using ExitGames.Client.Photon.StructWrapping;
+using Photon.Realtime;
 
-public class PlayerController : MonoBehaviourPun
+public class PlayerController : MonoBehaviourPunCallbacks
 {
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private PlayerMovement playerMovement;
@@ -27,49 +28,62 @@ public class PlayerController : MonoBehaviourPun
     private bool isDamageBuff;
     private int[] QAmmo = { 2, 0, 0 };
     private int[] EAmmo = { 1, 2, 1 };
-    private int kill = 0;
-    private int death = 0;
+    private int kill;
+    private int death;
     private string otherName;
 
     private void Start()
     {
+        kill = 0; death = 0;
         playerUiObject = GameObject.Find("PlayerUi");
         playerSpawner = GameObject.Find("PlayerSpawner").GetComponent<PlayerSpawner>();
         playerUi = GameObject.Find("Canvas").GetComponent<PlayerUi>();
+
         if (!photonView.IsMine) return;
+
         GameManager.Instance.CreateSettingPanel();
-        playerUi.InitSkillUi(QAmmo,EAmmo);
+        playerUi.InitSkillUi(QAmmo, EAmmo);
         playerUi.InitNickname(PhotonNetwork.LocalPlayer.NickName);
+
+        // 상대 플레이어 닉네임 가져오기 (한 번만 실행)
+        otherName = GameManager.Instance.GetOtherPlayerNickname();
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        // 상대가 새로 들어왔을 때 닉네임 갱신
+        otherName = GameManager.Instance.GetOtherPlayerNickname();
     }
 
     private void Update()
     {
-        if (!photonView.IsMine)
-        {
-            otherName = photonView.Owner.NickName;
-            return;
-        }
-        if (GameManager.Instance.isEnd)
+        if (!photonView.IsMine) return;
+
+        if (GameManager.Instance.isDraw)
         {
             playerUi.Draw();
-            playerUi.Info(PhotonNetwork.LocalPlayer.NickName, kill + " / " + death, otherName, death + " / " + kill);
+            playerUi.Info(PhotonNetwork.LocalPlayer.NickName, $"{kill} / {death}", otherName, $"{death} / {kill}");
         }
-        if (kill >= 3)
+        if (kill >= 1)
         {
             playerUi.Victory();
-            playerUi.Info(PhotonNetwork.LocalPlayer.NickName, kill + " / " + death, otherName, death + " / " + kill);
+            playerUi.Info(PhotonNetwork.LocalPlayer.NickName, $"{kill} / {death}", otherName, $"{death} / {kill}");
+            GameManager.Instance.isEnd = true;
         }
-        if (death >= 3)
+        if (death >= 1)
         {
             playerUi.Defeat();
-            playerUi.Info(PhotonNetwork.LocalPlayer.NickName, kill + " / " + death, otherName, death + " / " + kill);
+            playerUi.Info(PhotonNetwork.LocalPlayer.NickName, $"{kill} / {death}", otherName, $"{death} / {kill}");
+            GameManager.Instance.isEnd = true;
         }
+
         CurrnetAnimation();
         playerUi.UpdateHpDisplay(hp);
         playerUi.UpdateBulletDisplay(launchable.bullet);
         playerUi.UpdateKillDisplay(kill);
         playerUi.UpdateDeathDisplay(death);
-        playerBody.transform.localPosition = new Vector3(0, -0.8f, 0); // 애니메이션할 때 튀어나가서 고정
+        playerBody.transform.localPosition = new Vector3(0, -0.8f, 0);
+
         isRun = playerInput.GetRunInput();
         isCrouch = playerInput.GetCrouchInput();
         isZoom = playerInput.GetZoomInput();
@@ -90,7 +104,7 @@ public class PlayerController : MonoBehaviourPun
         if (playerInput.GetJumpInput()) playerMovement.JumpByInput();
         playerMovement.ImplementGravity();
 
-        if(GameManager.Instance.isRevival) Revival();
+        if (GameManager.Instance.isRevival) Revival();
     }
 
     private void CurrnetAnimation()

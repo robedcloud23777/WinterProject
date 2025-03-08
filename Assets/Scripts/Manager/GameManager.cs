@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
+using Photon.Realtime;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public bool isDie = false;
     public bool isRevival = false;
     public bool isEnd;
+    public bool isDraw;
 
     private void Awake()
     {
@@ -53,19 +55,23 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         if (time < 0f)
         {
+            isDraw = true;
             isEnd = true;
-            time = 600f;
-            timerIsRunning = false;
         }
         if (isEnd)
         {
-            PhotonNetwork.LeaveRoom();
-            isEnd = false;
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                PhotonNetwork.LeaveRoom();
+            }   
         }
     }
 
     public override void OnLeftRoom()
     {
+        timerIsRunning = false;
+        time = 600f;
+        isEnd = false;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         SceneManager.LoadScene("Start");
@@ -117,5 +123,23 @@ public class GameManager : MonoBehaviourPunCallbacks
         // 씬 내에 있는 Canvas를 찾음
         Canvas canvas = FindFirstObjectByType<Canvas>();
         return canvas != null ? canvas.transform : null;
+    }
+
+    public string GetOtherPlayerNickname()
+    {
+        if (PhotonNetwork.InRoom)
+        {
+            string myNickname = PhotonNetwork.NickName;
+
+            foreach (KeyValuePair<int, Player> player in PhotonNetwork.CurrentRoom.Players)
+            {
+                if (player.Value.NickName != myNickname) // 자신의 닉네임 제외
+                {
+                    return player.Value.NickName; // 상대 플레이어의 닉네임 반환
+                }
+            }
+        }
+
+        return null; // 상대 플레이어가 없으면 null 반환
     }
 }

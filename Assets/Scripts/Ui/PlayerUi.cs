@@ -45,6 +45,8 @@ public class PlayerUi : MonoBehaviour
     public Image[] endPanel;
     public TMP_Text[] endPanelText;
 
+    public TMP_Text enter;
+
     void Awake()
     {
         DOTween.SetTweensCapacity(1000, 50); // 첫 번째 값: 트윈 개수, 두 번째 값: 시퀀스 개수
@@ -53,6 +55,12 @@ public class PlayerUi : MonoBehaviour
     private void Start()
     {
         StartCoroutine(StartCountdown());
+        InitImages(victoryPanel);
+        InitImages(defeatPanel);
+        InitImages(drawPanel);
+        for(int i = 0; i < endPanel.Length; i++) InitImages(endPanel[i]);
+        InitText(enter);
+        for (int i = 0; i < endPanelText.Length; i++) InitText(endPanelText[i]);
     }
 
     private void Update()
@@ -73,6 +81,10 @@ public class PlayerUi : MonoBehaviour
             }
         }
 
+        if (GameManager.Instance.isEnd)
+        {
+            enter.DOFade(1f, 0.3f).SetEase(Ease.InOutQuad);
+        }
     }
 
     public void InitSkillUi(int[] q, int[] e)
@@ -274,5 +286,19 @@ public class PlayerUi : MonoBehaviour
         myKD.gameObject.SetActive(true);
         otherName.gameObject.SetActive(true);
         otherKD.gameObject.SetActive(true);
+    }
+
+    private void InitImages(Image image)
+    {
+        Color color = image.color;
+        color.a = 0f;
+        image.color = color;
+    }
+
+    private void InitText(TMP_Text text)
+    {
+        Color color = text.color;
+        color.a = 0f;
+        text.color = color;
     }
 }
