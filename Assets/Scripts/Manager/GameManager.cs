@@ -62,6 +62,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             if (Input.GetKeyDown(KeyCode.Return))
             {
+                SoundManager.Instance.StopSound(null,"endBGM");
                 PhotonNetwork.LeaveRoom();
             }   
         }
@@ -79,6 +80,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void SpawnPlayer(Vector3 spawnPoint)
     {
+        SoundManager.Instance.StopSound(null,"midBGM");
         PhotonNetwork.Instantiate(characters[myCharacter], spawnPoint, Quaternion.identity);
     }
 

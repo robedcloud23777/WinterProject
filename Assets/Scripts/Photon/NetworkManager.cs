@@ -65,6 +65,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        SoundManager.Instance.PlayBGM("StartBGM", 1, 0);
         // 알파값을 1로 늘리며 Fade In
         for (int i = 0; i < BackGround.Length; i++)
             BackGround[i].DOFade(1f, 1f).SetEase(Ease.InOutQuad);
@@ -226,7 +227,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             Right.interactable = true;
         }
         PlayClick2Sound();
-
     }
 
     public void EnterCharacterPanel()
@@ -314,6 +314,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedLobby()
     {
+        SoundManager.Instance.PlayBGM("midBGM", 1, 0);
         StartPanel.SetActive(false);
         NicknamePanel.SetActive(false);
         LobbyPanel.SetActive(true);
@@ -340,6 +341,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         NicknamePanel.SetActive(true);
         LobbyPanel.SetActive(false);
+        SoundManager.Instance.PlayBGM("StartBGM", 1, 0);
     }
     #endregion
 
@@ -400,6 +402,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void Ready()
     {
+        PlayClick1Sound();
         int index = PhotonNetwork.LocalPlayer.ActorNumber;
         photonView.RPC("SetReadyState", RpcTarget.All, index - 1);
     }
@@ -419,6 +422,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void StartGame()
     {
+        PlayClick2Sound();
         if (IsReady[0] && IsReady[1]) photonView.RPC("GameStart", RpcTarget.All);
     }
 

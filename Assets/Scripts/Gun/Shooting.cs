@@ -21,13 +21,17 @@ public class Shooting : MonoBehaviourPun
         if (!photonView.IsMine) return;
         if (!GameManager.Instance.isDie && playerInput.GetShootInput() && !isDelay && launchable.IsShoot())
         {
+            SoundManager.Instance.PlaySound(gameObject,"shoot",1,1);
             isDelay = true;
             FireRaycast();
             StartCoroutine(CountAttackDelay());
         }
 
         if (playerInput.GetRInput() && launchable.bullet != 25)
+        {
+            SoundManager.Instance.PlaySound(gameObject, "¿Â¿¸", 1, 1);
             StartCoroutine(launchable.Reload());
+        }
     }
 
     private void FireRaycast()

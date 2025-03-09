@@ -62,17 +62,20 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
         if (GameManager.Instance.isDraw)
         {
+            SoundManager.Instance.PlayBGM("endBGM", 1,0);
             playerUi.Draw();
             playerUi.Info(PhotonNetwork.LocalPlayer.NickName, $"{kill} / {death}", otherName, $"{death} / {kill}");
         }
         if (kill >= 40)
         {
+            SoundManager.Instance.PlayBGM("endBGM", 1, 0);
             playerUi.Victory();
             playerUi.Info(PhotonNetwork.LocalPlayer.NickName, $"{kill} / {death}", otherName, $"{death} / {kill}");
             GameManager.Instance.isEnd = true;
         }
         if (death >= 40)
         {
+            SoundManager.Instance.PlayBGM("endBGM", 1, 0);
             playerUi.Defeat();
             playerUi.Info(PhotonNetwork.LocalPlayer.NickName, $"{kill} / {death}", otherName, $"{death} / {kill}");
             GameManager.Instance.isEnd = true;
@@ -163,6 +166,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         if (GameManager.Instance.isDie) return;
         if (playerNum == 0 && !isSpeedBoost && QAmmo[0] > 0)
         {
+            SoundManager.Instance.PlaySound(gameObject, "Buff", 1, 1);
             StartCoroutine(SpeedBoostCoroutine(10f, 1.5f));
             playerUi.T_QSkill(QAmmo[0]);
             QAmmo[0]--;
@@ -183,6 +187,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         if (GameManager.Instance.isDie) return;
         if (playerNum == 0 && EAmmo[0] > 0)
         {
+            SoundManager.Instance.PlaySound(gameObject, "flash", 1, 1);
             photonView.RPC("VFX1", RpcTarget.All, 0, transform.position, 3f);
             playerMovement.controller.enabled = false;
             Vector3 targetPosition = transform.position + transform.forward * 10f;
@@ -200,12 +205,14 @@ public class PlayerController : MonoBehaviourPunCallbacks
         }
         else if (playerNum == 1 && EAmmo[1] > 0 && !isDamageBuff)
         {
+            SoundManager.Instance.PlaySound(gameObject, "Buff", 1, 1);
             StartCoroutine(DamageBuff(5f, 2));
             playerUi.Y_ESkill(EAmmo[1]);
             EAmmo[1]--;
         }
         else if (playerNum == 2 && EAmmo[2] > 0 && playerMovement.isGround())
         {
+            SoundManager.Instance.PlaySound(gameObject, "SuperJump", 1, 1);
             photonView.RPC("VFX", RpcTarget.All, 3, transform.position, 3f);
             playerMovement.SuperJump();
             playerUi.I_ESkill(EAmmo[2]);

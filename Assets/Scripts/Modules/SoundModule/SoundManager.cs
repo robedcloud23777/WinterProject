@@ -181,10 +181,12 @@ public class SoundManager : SingletonPun<SoundManager>
     // Ư�� ���带 ���ߴ� �޼���
     public void StopSound(GameObject soundObject, string soundName)
     {
-        if (soundObject == null)
+        if (bgmClips.ContainsKey(soundName) && bgmSource.clip != null && bgmSource.clip.name == soundName)
         {
             bgmSource.Stop();
+            return;
         }
+
         var sounds = activeSounds.FindAll(tuple => tuple.Item1 == soundObject && tuple.Item2.clip.name == soundName);
         if (sounds.Count > 0)
         {
@@ -196,6 +198,7 @@ public class SoundManager : SingletonPun<SoundManager>
             }
         }
     }
+
     public void ChangeVolume(GameObject soundObject, string soundName, float rate)
     {
         var sounds = activeSounds.FindAll(tuple => tuple.Item1 == soundObject && tuple.Item2.clip.name == soundName);
