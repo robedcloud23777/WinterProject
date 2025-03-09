@@ -9010,6 +9010,7 @@ MonoBehaviour:
   hp: 150
   isRun: 0
   isCrouch: 0
+  isDamageBuff: 0
 --- !u!114 &2773640192089426793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9125,8 +9126,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b41e492b35aeff4c868a0c222781755, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerController: {fileID: 3450565293647210273}
   sparkVFX: {fileID: 1336949550903370, guid: 4543ab5e3d405ec40a8d4e9aa5165030, type: 3}
   markVFX: {fileID: 8214054846265365185, guid: 72558b6a865a5074ba75be3e766eeeb5, type: 3}
+  buffMarkVFX: {fileID: 362261158077530393, guid: a481346ab840d544281effec8cf5c62d, type: 3}
 --- !u!120 &7380953123248836412
 LineRenderer:
   serializedVersion: 2
@@ -9148,7 +9151,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 17a7cf3f1de52504dba11ce1627cf00e, type: 2}
+  - {fileID: 2100000, guid: 9c9899f9bb5a9034b8e846c92a1c65ea, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class BulletMark : MonoBehaviour
 {
+    public PlayerController playerController;
     [SerializeField] private GameObject sparkVFX;
     [SerializeField] private GameObject markVFX;
+    [SerializeField] private GameObject buffMarkVFX;
 
     public void Spark(Transform firePoint)
     {
@@ -15,7 +17,9 @@ public class BulletMark : MonoBehaviour
 
     public void MakeMark(RaycastHit hit) 
     {
-        GameObject muzzleFlash = Instantiate(markVFX, hit.point, Quaternion.LookRotation(hit.normal));
+        GameObject muzzleFlash;
+        if (!playerController.isDamageBuff) muzzleFlash = Instantiate(markVFX, hit.point, Quaternion.LookRotation(hit.normal));
+        else muzzleFlash = Instantiate(buffMarkVFX, hit.point, Quaternion.LookRotation(hit.normal));
         Destroy(muzzleFlash, 1.0f);
     }
 }

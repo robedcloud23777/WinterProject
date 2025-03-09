@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     private bool isZoom;
     private bool isShoot;
     private bool isSpeedBoost;
-    private bool isDamageBuff;
+    public bool isDamageBuff;
     private int[] QAmmo = { 2, 0, 0 };
     private int[] EAmmo = { 1, 2, 1 };
     private int kill;
