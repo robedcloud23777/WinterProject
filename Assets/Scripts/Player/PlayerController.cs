@@ -64,13 +64,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
             playerUi.Draw();
             playerUi.Info(PhotonNetwork.LocalPlayer.NickName, $"{kill} / {death}", otherName, $"{death} / {kill}");
         }
-        if (kill >= 1)
+        if (kill >= 40)
         {
             playerUi.Victory();
             playerUi.Info(PhotonNetwork.LocalPlayer.NickName, $"{kill} / {death}", otherName, $"{death} / {kill}");
             GameManager.Instance.isEnd = true;
         }
-        if (death >= 1)
+        if (death >= 40)
         {
             playerUi.Defeat();
             playerUi.Info(PhotonNetwork.LocalPlayer.NickName, $"{kill} / {death}", otherName, $"{death} / {kill}");
