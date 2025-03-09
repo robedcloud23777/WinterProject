@@ -50,6 +50,14 @@ MonoBehaviour:
   - EnablePlayer
   - KillCount
   - IncreaseKill
+  - MakeMark
+  - Spark
+  - SyncLineRenderer
+  - MakeMarkInstantiate
+  - SparkInstantiate
+  - SyncShot
+  - VFX
+  - VFX1
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

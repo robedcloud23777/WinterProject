@@ -57,9 +57,7 @@ public class Shooting : MonoBehaviourPun
         // 총구에서 스파크 VFX 생성
         bulletMark.Spark(firePoint);
 
-        // LineRenderer 활성화 및 위치 설정
-        lineRenderer.enabled = true;
-        lineRenderer.SetPosition(0, firePoint.position); // 시작점
+        Vector3 hitPosition = firePoint.position + shootDirection * 100f;
 
         if (Physics.Raycast(ray, out hit))
         {
@@ -79,14 +77,9 @@ public class Shooting : MonoBehaviourPun
                 // 총알 자국 효과 생성
                 bulletMark.MakeMark(hit);
             }
-
-            // LineRenderer 끝 위치 설정 (맞은 지점)
-            lineRenderer.SetPosition(1, hit.point);
         }
         else
         {
-            // 만약 빗나갔다면 끝 위치는 100 유닛 떨어진 지점
-            lineRenderer.SetPosition(1, ray.origin + ray.direction * 100f);
             launchable.bullet--;
         }
 
@@ -94,7 +87,18 @@ public class Shooting : MonoBehaviourPun
         Invoke("DisableLineRenderer", 1f);
 
         Debug.DrawRay(ray.origin, shootDirection * 100f, Color.red, 2f);
+        photonView.RPC("SyncShot", RpcTarget.All, firePoint.position, hitPosition);
     }
+
+    [PunRPC]
+    private void SyncShot(Vector3 start, Vector3 end)
+    {
+        lineRenderer.enabled = true;
+        lineRenderer.SetPosition(0, start);
+        lineRenderer.SetPosition(1, end);
+        Invoke("DisableLineRenderer", 1f);
+    }
+
 
 
     private void DisableLineRenderer()

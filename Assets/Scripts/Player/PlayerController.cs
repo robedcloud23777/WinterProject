@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [SerializeField] private Launchable launchable;
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private int hp = 150;
+    [SerializeField] private GameObject[] VFXs;
     private bool isMove;
     public bool isRun;
     public bool isCrouch;
@@ -182,6 +183,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         if (GameManager.Instance.isDie) return;
         if (playerNum == 0 && EAmmo[0] > 0)
         {
+            photonView.RPC("VFX1", RpcTarget.All, 0, transform.position, 3f);
             playerMovement.controller.enabled = false;
             Vector3 targetPosition = transform.position + transform.forward * 10f;
             RaycastHit hit;
@@ -194,15 +196,17 @@ public class PlayerController : MonoBehaviourPunCallbacks
             playerMovement.controller.enabled = true;
             playerUi.T_ESkill(EAmmo[0]);
             EAmmo[0]--;
+            photonView.RPC("VFX1", RpcTarget.All, 0, transform.position, 3f);
         }
         else if (playerNum == 1 && EAmmo[1] > 0 && !isDamageBuff)
         {
-            StartCoroutine(DamageBuff());
+            StartCoroutine(DamageBuff(5f, 2));
             playerUi.Y_ESkill(EAmmo[1]);
             EAmmo[1]--;
         }
         else if (playerNum == 2 && EAmmo[2] > 0 && playerMovement.isGround())
         {
+            photonView.RPC("VFX", RpcTarget.All, 3, transform.position, 3f);
             playerMovement.SuperJump();
             playerUi.I_ESkill(EAmmo[2]);
             EAmmo[2]--;
@@ -224,6 +228,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
         while (elapsedTime < duration)
         {
+            photonView.RPC("VFX", RpcTarget.All, 1, transform.position, 0.3f);
             playerMovement.moveSpeed = (isRun ? 10.0f : 5.0f);
             if (isCrouch) playerMovement.moveSpeed /= 3;
             playerMovement.moveSpeed *= boostMultiplier;
@@ -235,14 +240,24 @@ public class PlayerController : MonoBehaviourPunCallbacks
         isSpeedBoost = false;
     }
 
-    IEnumerator DamageBuff()
+    IEnumerator DamageBuff(float duration, int buffMultiplier)
     {
-        shooting.damage *= 2;
         isDamageBuff = true;
-        yield return new WaitForSeconds(5f);
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            photonView.RPC("VFX", RpcTarget.All, 2, transform.position, 0.3f);
+            shooting.damage *= buffMultiplier;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
         shooting.damage = 10;
         isDamageBuff = false;
     }
+
 
     [PunRPC]
     public void GetDamage(int damage, int attackerId)
@@ -319,5 +334,20 @@ public class PlayerController : MonoBehaviourPunCallbacks
         hp = 150;
         QAmmo = new int[] { 2, 0, 0 };
         EAmmo = new int[] { 1, 2, 1 };
+    }
+
+    [PunRPC]
+    private void VFX(int index, Vector3 position, float coolTime)
+    {
+        GameObject effect = Instantiate(VFXs[index], position, Quaternion.identity);
+        Destroy(effect, coolTime);
+    }
+
+    [PunRPC]
+    private void VFX1(int index, Vector3 position, float coolTime)
+    {
+        Quaternion rotation = Quaternion.Euler(0, 90, 0);
+        GameObject effect = Instantiate(VFXs[index], position, rotation);
+        Destroy(effect, coolTime);
     }
 }
